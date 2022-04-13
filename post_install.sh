@@ -27,4 +27,7 @@ export NODEJS_HOME=/opt/node-v16.14.2-linux-x64/bin
 export PATH=$NODEJS_HOME:$PATH
 ' | tee -a ~/.profile ~/.bashrc
 
+. ~/.profile ~/.bashrc
+
+
 echo "\nFinished!\n";
