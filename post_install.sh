@@ -5,7 +5,7 @@
 sudo apt-get update && sudo apt-get upgrade
 
 # apt - Plasma DE and Softwares
-sudo apt-get install kde-plasma-desktop ark kate kcalc kde-spectacle okular gwenview qbittorrent fonts-liberation firefox-esr libreoffice libreoffice-l10n-pt-br libreoffice-plasma vlc curl libdbus-glib-1-2 sudo apt-get install plasma-widgets-addons nodejs npm
+sudo apt-get install kde-plasma-desktop ark kate kcalc kde-spectacle okular gwenview qbittorrent fonts-liberation firefox-esr libreoffice libreoffice-l10n-pt-br libreoffice-plasma vlc curl libdbus-glib-1-2 plasma-widgets-addons nodejs npm
 
 # Configs
 # Network Manager: Enabling Interface Management
