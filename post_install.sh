@@ -14,7 +14,7 @@ sed -i "s/.*deb-src http:\/\/security.debian.org\/debian-security bookworm-secur
 sudo apt-get update && sudo apt-get upgrade -y
 
 ## apt - Plasma DE and Softwares
-sudo apt-get install kde-plasma-desktop ark kate kcalc kde-spectacle okular gwenview kompare qbittorrent fonts-liberation firefox-esr libreoffice libreoffice-l10n-pt-br libreoffice-plasma vlc curl libdbus-glib-1-2 plasma-widgets-addons isenkram-cli firmware-linux firmware-linux-nonfree -y
+sudo apt-get install kde-plasma-desktop ark kate kcalc kde-spectacle okular gwenview kompare qbittorrent fonts-liberation firefox-esr libreoffice libreoffice-l10n-pt-br libreoffice-plasma vlc curl libdbus-glib-1-2 plasma-widgets-addons isenkram-cli firmware-linux firmware-linux-free firmware-linux-nonfree -y
 
 ## Configs
 # Network Manager: Enabling Interface Management
