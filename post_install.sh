@@ -64,6 +64,17 @@ then
     # Gnome
     desktop_enviroment=(
         gnome-session
+        gnome-disk-utility
+        fonts-cantarell
+        gnome-maps
+        gnome-music
+        gnome-photos
+        gnome-software
+        gnome-terminal
+        gnome-text-editor
+        gnome-tweaks
+        gnome-weather
+        nautilus
     )
 elif [ $de_option -eq 3 ]
 then
