@@ -31,10 +31,6 @@ sudo sed -i "s/.*deb-src http:\/\/security.debian.org\/debian-security bookworm-
 sudo apt-get update && sudo apt-get upgrade -y
 
 ## Configs
-# Network Manager: Enabling Interface Management
-sudo cp /etc/NetworkManager/NetworkManager.conf "/etc/NetworkManager/NetworkManager.conf_backup_$(date)"
-sudo sed -i "s/managed=false/managed=true/g" /etc/NetworkManager/NetworkManager.conf
-
 # Search Drivers
 sudo isenkram-autoinstall-firmware
 
@@ -119,6 +115,12 @@ export PATH=$NODEJS_HOME:$PATH
 ' | tee -a ~/.profile ~/.bashrc
 
 . ~/.profile ~/.bashrc
+
+
+## Last Configurations
+# Network Manager: Enabling Interface Management
+sudo cp /etc/NetworkManager/NetworkManager.conf "/etc/NetworkManager/NetworkManager.conf_backup_$(date)"
+sudo sed -i "s/managed=false/managed=true/g" /etc/NetworkManager/NetworkManager.conf
 
 echo '
 
