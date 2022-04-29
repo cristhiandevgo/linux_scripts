@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Nodejs - LTS
 
 cp "$HOME/.bashrc" "$HOME/.bashrc_backup_$(date)"

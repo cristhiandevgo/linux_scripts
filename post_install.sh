@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Post Instalation for Debian with KDE Plasma
 # Autor: cristhiandevgo
 
