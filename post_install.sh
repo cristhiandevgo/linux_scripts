@@ -31,9 +31,6 @@ sudo sed -i "s/.*deb-src http:\/\/security.debian.org\/debian-security bookworm-
 sudo apt-get update && sudo apt-get upgrade -y
 
 ## Configs
-# Search Drivers
-sudo isenkram-autoinstall-firmware
-
 # Configure the packages
 read -p '
 Choose your Desktop Enviroment (Default: KDE Plasma)
@@ -118,6 +115,8 @@ export PATH=$NODEJS_HOME:$PATH
 
 
 ## Last Configurations
+# Search Drivers
+sudo isenkram-autoinstall-firmware
 # Network Manager: Enabling Interface Management
 sudo cp /etc/NetworkManager/NetworkManager.conf "/etc/NetworkManager/NetworkManager.conf_backup_$(date)"
 sudo sed -i "s/managed=false/managed=true/g" /etc/NetworkManager/NetworkManager.conf
