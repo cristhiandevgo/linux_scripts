@@ -33,7 +33,8 @@ sudo apt-get update && sudo apt-get upgrade -y
 ## Configs
 # Configure the packages
 read -p '
-Choose your Desktop Enviroment (Default: KDE Plasma)
+Choose your Desktop Enviroment (Default: KDE Plasma):
+
 1 KDE Plasma
 2 Gnome
 3 Mate
@@ -47,9 +48,6 @@ then
         kde-plasma-desktop
         kde-spectacle
         ark
-        dolphin
-        firefox-esr
-        fonts-liberation
         gwenview
         kate
         kcalc
@@ -82,6 +80,7 @@ then
     desktop_enviroment=(
         mate-desktop-environment
         mate-desktop-environment-extras
+        mate-dock-applet
     )
 elif [ $de_option -eq 4 ]
 then
@@ -95,9 +94,11 @@ fi
 # Common packages
 common_packages=(
     curl
+    firefox-esr
     firmware-linux
     firmware-linux-free
     firmware-linux-nonfree
+    fonts-liberation
     gimp
     git
     inkscape
