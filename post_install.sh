@@ -80,7 +80,6 @@ then
     desktop_enviroment=(
         mate-desktop-environment
         mate-desktop-environment-extras
-        mate-dock-applet
     )
 elif [ $de_option -eq 4 ]
 then
