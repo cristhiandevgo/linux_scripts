@@ -80,6 +80,7 @@ then
     desktop_enviroment=(
         mate-desktop-environment
         mate-desktop-environment-extras
+        lightdm
     )
 elif [ $de_option -eq 4 ]
 then
