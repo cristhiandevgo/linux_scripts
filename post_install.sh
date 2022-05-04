@@ -72,6 +72,7 @@ then
         gnome-text-editor
         gnome-tweaks
         gnome-weather
+        libreoffice-gnome
         nautilus
     )
 elif [ $de_option -eq 3 ]
@@ -80,7 +81,10 @@ then
     desktop_enviroment=(
         mate-desktop-environment
         mate-desktop-environment-extras
+        libreoffice-gtk3
         lightdm
+        network-manager-gnome
+        synaptic
     )
 elif [ $de_option -eq 4 ]
 then
@@ -88,6 +92,8 @@ then
     desktop_enviroment=(
         xfce4
         xfce4-goodies
+        libreoffice-gtk3
+        menulibre
     )
 fi
 
@@ -99,6 +105,7 @@ common_packages=(
     firmware-linux-free
     firmware-linux-nonfree
     fonts-liberation
+    g++
     gimp
     git
     inkscape
