@@ -200,7 +200,7 @@ then
     gsettings set org.cinnamon.desktop.interface gtk-theme "Arc"
     gsettings set org.cinnamon.desktop.wm.preferences theme "Arc"
     gsettings set org.cinnamon.desktop.interface icon-theme "Papirus"
-    gsettings set org.cinnamon.desktop.wm.preferences cursor-theme "mate"
+    gsettings set org.cinnamon.desktop.interface cursor-theme "mate"
 fi
 
 
