@@ -39,6 +39,7 @@ Choose your Desktop Enviroment (Default: KDE Plasma):
 2 Gnome
 3 Mate
 4 XFCE
+5 Cinnamon
 ' de_option
 
 if [ ! $de_option ] || [ $de_option -eq 1 ] || [ $de_option -ge 6 ]
@@ -52,10 +53,10 @@ then
         kate
         kcalc
         kompare
-        ktorrent
         libreoffice-plasma
         okular
         plasma-widgets-addons
+        qbittorrent
     )
 elif [ $de_option -eq 2 ]
 then
@@ -95,6 +96,37 @@ then
         libreoffice-gtk3
         menulibre
         synaptic
+        thunderbird
+    )
+elif [ $de_option -eq 5 ]
+then
+     # Cinnamon
+    desktop_enviroment=(
+        cinnamon
+        blueman
+        brasero
+        cheese
+        cups
+        deja-dup
+        eog
+        evince
+        gdebi
+        gedit
+        gnome-calculator
+        gnome-font-viewer
+        gnome-screenshot
+        gnome-software
+        gnome-system-monitor
+        gnome-terminal
+        gnome-user-share
+        gnote
+        gdebi
+        libreoffice-gnome
+        mate-calc
+        simple-scan
+        synaptic
+        sound-juicer
+        thunderbird
     )
 fi
 
@@ -106,6 +138,7 @@ common_packages=(
     firmware-linux-free
     firmware-linux-nonfree
     fonts-liberation
+    fonts-noto
     g++
     gimp
     git
