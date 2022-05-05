@@ -58,6 +58,9 @@ then
         plasma-widgets-addons
         qbittorrent
     )
+
+    themes=(
+    )
 elif [ $de_option -eq 2 ]
 then
     # Gnome
@@ -76,6 +79,9 @@ then
         libreoffice-gnome
         nautilus
     )
+
+    themes=(
+    )
 elif [ $de_option -eq 3 ]
 then
     # Mate
@@ -87,6 +93,9 @@ then
         network-manager-gnome
         synaptic
     )
+
+    themes=(
+    )
 elif [ $de_option -eq 4 ]
 then
      # XFCE
@@ -97,6 +106,9 @@ then
         menulibre
         synaptic
         thunderbird
+    )
+
+    themes=(
     )
 elif [ $de_option -eq 5 ]
 then
@@ -128,6 +140,12 @@ then
         sound-juicer
         thunderbird
     )
+
+    themes=(
+        arc-theme
+        mate-themes
+        papirus-icon-theme
+    )
 fi
 
 # Common packages
@@ -150,7 +168,7 @@ common_packages=(
     vlc
 )
 
-sudo apt-get install ${desktop_enviroment[@]} ${common_packages[@]}
+sudo apt-get install ${desktop_enviroment[@]} ${common_packages[@]} ${themes[@]}
 
 # Nodejs - LTS
 cp "$HOME/.bashrc" "$HOME/.bashrc_backup_$(date)"
@@ -170,9 +188,20 @@ export PATH=$NODEJS_HOME:$PATH
 ## Last Configurations
 # Search Drivers
 sudo isenkram-autoinstall-firmware
+
 # Network Manager: Enabling Interface Management
 sudo cp /etc/NetworkManager/NetworkManager.conf "/etc/NetworkManager/NetworkManager.conf_backup_$(date)"
 sudo sed -i "s/managed=false/managed=true/g" /etc/NetworkManager/NetworkManager.conf
+
+# Cinnamon Themes
+if [ $de_option -eq 5 ]
+then
+    gsettings set org.cinnamon.theme name "Arc"
+    gsettings set org.cinnamon.desktop.interface gtk-theme "Arc"
+    gsettings set org.cinnamon.desktop.wm.preferences theme "Arc"
+    gsettings set org.cinnamon.desktop.wm.preferences cursor-theme "mate"
+fi
+
 
 echo '
 
