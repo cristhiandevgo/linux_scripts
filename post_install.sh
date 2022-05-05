@@ -94,6 +94,7 @@ then
         xfce4-goodies
         libreoffice-gtk3
         menulibre
+        synaptic
     )
 fi
 
