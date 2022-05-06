@@ -189,9 +189,13 @@ export PATH=$NODEJS_HOME:$PATH
 # Search Drivers
 sudo isenkram-autoinstall-firmware
 
-# Network Manager: Enabling Interface Management
-sudo cp /etc/NetworkManager/NetworkManager.conf "/etc/NetworkManager/NetworkManager.conf_backup_$(date)"
-sudo sed -i "s/managed=false/managed=true/g" /etc/NetworkManager/NetworkManager.conf
+if [ ! $de_option ] || [ $de_option -eq 1 ] || [ $de_option -ge 6 ]
+then
+    # Network Manager: Enabling Interface Management
+    sudo cp /etc/NetworkManager/NetworkManager.conf "/etc/NetworkManager/NetworkManager.conf_backup_$(date)"
+    sudo sed -i "s/managed=false/managed=true/g" /etc/NetworkManager/NetworkManager.conf
+fi
+
 
 # Cinnamon Themes
 if [ $de_option -eq 5 ]
