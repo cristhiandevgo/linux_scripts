@@ -172,17 +172,17 @@ sudo apt-get install ${desktop_enviroment[@]} ${common_packages[@]} ${themes[@]}
 # Nodejs - LTS
 cp "$HOME/.bashrc" "$HOME/.bashrc_backup_$(date)"
 cp "$HOME/.profile" "$HOME/.profile_backup_$(date)"
+mkdir $HOME/.node
 curl https://nodejs.org/dist/v16.15.0/node-v16.15.0-linux-x64.tar.xz --output node-v16.15.0-linux-x64.tar.xz
-tar -xf node-v16.15.0-linux-x64.tar.xz -C $HOME --transform s/node-v16.15.0-linux-x64/.node-v16.15.0-linux-x64/
+tar -xf node-v16.15.0-linux-x64.tar.xz -C $HOME/.node/
 
 echo -n '
-#Node
-export NODEJS_HOME=$HOME/.node-v16.15.0-linux-x64/bin
+# Node
+export NODEJS_HOME=$HOME/.node/node-v16.15.0-linux-x64/bin
 export PATH=$NODEJS_HOME:$PATH
 ' | tee -a ~/.profile ~/.bashrc
 
 . ~/.profile ~/.bashrc
-
 
 ## Last Configurations
 # Search Drivers
@@ -195,7 +195,6 @@ then
     sudo cp /etc/NetworkManager/NetworkManager.conf "/etc/NetworkManager/NetworkManager.conf_backup_$(date)"
     sudo sed -i "s/managed=false/managed=true/g" /etc/NetworkManager/NetworkManager.conf
 fi
-
 
 # Cinnamon Themes
 if [ $de_option -eq 5 ]
