@@ -38,7 +38,7 @@ sudo sed -i "s/.*deb-src http:\/\/security.debian.org\/debian-security bookworm-
 sudo apt-get update && sudo apt-get upgrade -y
 
 ###############################
-## Desktop Enviroment
+## Read vars
 ###############################
 read -p '
 Choose your Desktop Enviroment (Default: KDE Plasma):
@@ -49,6 +49,28 @@ Choose your Desktop Enviroment (Default: KDE Plasma):
 4 XFCE
 5 Cinnamon
 ' de_option
+
+read -p '
+Choose the browser(s) to install (Default: None):
+
+1 Mozilla Firefox
+2 Chromium
+3 Both
+4 None
+' browser_option
+
+read -p '
+Search for extra drivers? (Default: No)
+
+1 Yes
+2 No
+' drivers_option
+
+## End Read vars
+
+###############################
+## Desktop Enviroment
+###############################
 
 if [ ! $de_option ] || [ $de_option -eq 1 ] || [ $de_option -ge 6 ]
 then
@@ -181,14 +203,6 @@ common_packages=(
 ###############################
 ## Browser
 ###############################
-read -p '
-Choose the browser(s) to install (Default: None):
-
-1 Mozilla Firefox
-2 Chromium
-3 Both
-4 None
-' browser_option
 
 # Initialize browser var
 browser=()
@@ -252,13 +266,8 @@ fi
 ###############################
 ## Drivers
 ###############################
-read -p '
-Search for extra drivers? (Default: No)
 
-1 Yes
-2 No
-' drivers_option
-
+# Initialize drivers var
 drivers=()
 
 # None
@@ -277,7 +286,7 @@ fi
 
 ## End Drivers
 
-sudo apt-get install ${desktop_enviroment[@]} ${common_packages[@]} ${themes[@]} ${browser[@]} ${drivers[@]}
+sudo apt-get install ${desktop_enviroment[@]} ${common_packages[@]} ${themes[@]} ${browser[@]} ${drivers[@]} -y
 
 ###############################
 ## Nodejs - LTS
