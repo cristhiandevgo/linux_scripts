@@ -66,6 +66,13 @@ Search for extra drivers? (Default: No)
 2 No
 ' drivers_option
 
+read -p '
+Reboot after install? (Default: Yes)
+
+1 Yes
+2 No
+' reboot_option
+
 ## End Read vars
 
 ###############################
@@ -340,6 +347,11 @@ echo '
 
 
 Finished!
-Reboot Your System!
 
 '
+
+# Reboot Option
+if [ ! $reboot_option ] || [ $reboot_option -eq 0 ] || [ $reboot_option -eq 1 ] || [ $reboot_option -ge 3 ]
+then
+    sudo reboot
+fi
