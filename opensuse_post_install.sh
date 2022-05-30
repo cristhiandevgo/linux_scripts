@@ -15,27 +15,22 @@ echo '
 
 
 
-                    Post Install Debian Script
+                    Post Install OpenSuse Script
 
 
 
 '
 
 ##############################
-## Add contrib and non-free to sources.list
+## Add opi codecs
 ###############################
-sudo cp "/etc/apt/sources.list" "/etc/apt/sources.list_backup_$(date)"
-
-sudo sed -i "s/.*deb http:\/\/deb.debian.org\/debian\/ bookworm main.*/deb http:\/\/deb.debian.org\/debian\/ bookworm main contrib non-free/g" /etc/apt/sources.list
-sudo sed -i "s/.*deb-src http:\/\/deb.debian.org\/debian\/ bookworm main.*/deb-src http:\/\/deb.debian.org\/debian\/ bookworm main contrib non-free/g" /etc/apt/sources.list
-
-sudo sed -i "s/.*deb http:\/\/security.debian.org\/debian-security bookworm-security main.*/deb http:\/\/security.debian.org\/debian-security bookworm-security main contrib non-free/g" /etc/apt/sources.list
-sudo sed -i "s/.*deb-src http:\/\/security.debian.org\/debian-security bookworm-security main.*/deb-src http:\/\/security.debian.org\/debian-security bookworm-security main contrib non-free/g" /etc/apt/sources.list
+sudo zypper install opi
+opi packman
 
 ###############################
 ## Check updates
 ###############################
-sudo apt-get update && sudo apt-get upgrade -y
+sudo zypper ref && sudo zypper update
 
 ###############################
 ## Read vars
@@ -60,14 +55,7 @@ Choose the browser(s) to install (Default: None):
 ' browser_option
 
 read -p '
-Search for extra drivers? (Default: No)
-
-1 Yes
-2 No
-' drivers_option
-
-read -p '
-Reboot after install? (Default: Yes)
+Reboot after install? (Default: Yes):
 
 1 Yes
 2 No
@@ -83,17 +71,20 @@ if [ ! $de_option ] || [ $de_option -eq 1 ] || [ $de_option -ge 6 ]
 then
     # KDE Plasma
     desktop_enviroment=(
-        kde-plasma-desktop
-        kde-spectacle
+        patterns-kde-kde_plasma
+        dolphin
         ark
-        gwenview
+        discover
+        gwenview5
         kate
         kcalc
+        kolourpaint
+        konsole
         kompare
-        libreoffice-plasma
+        libreoffice-qt5
         okular
-        plasma-widgets-addons
         qbittorrent
+        spectacle
     )
 
     themes=(
@@ -190,18 +181,16 @@ fi
 ###############################
 common_packages=(
     curl
-    firmware-linux
-    firmware-linux-free
-    firmware-linux-nonfree
-    fonts-liberation
-    fonts-noto
-    g++
+    kernel-firmware-all
+    liberation-fonts
+    noto-sans-fonts
+    gcc-c++
     gimp
     git
     inkscape
     libdbus-glib-1-2
     libreoffice
-    libreoffice-l10n-pt-br
+    libreoffice-l10n-pt_br
     vlc
     wget
 )
@@ -264,36 +253,13 @@ if [ $browser_option -eq 2 ] || [ $browser_option -eq 3 ]
 then
     browser=(
         chromium
-        chromium-l10n
+        chromium-ffmpeg-extra
     )
 fi
 
 ## End browser
 
-###############################
-## Drivers
-###############################
-
-# Initialize drivers var
-drivers=()
-
-# None
-if [ ! $drivers_option ] || [ $drivers_option -eq 0 ] || [ $drivers_option -ge 3 ]
-then
-    drivers_option=0
-    echo "none"
-fi
-
-if [ $drivers_option -eq 1 ]
-then
-    drivers=(
-        isenkram-cli
-    )
-fi
-
-## End Drivers
-
-sudo apt-get install ${desktop_enviroment[@]} ${common_packages[@]} ${themes[@]} ${browser[@]} ${drivers[@]} -y
+sudo zypper install -y ${desktop_enviroment[@]} ${common_packages[@]} ${themes[@]} ${browser[@]}
 
 ###############################
 ## Nodejs - LTS
@@ -317,19 +283,13 @@ export PATH=$NODEJS_HOME:$PATH
 ## Last Configurations
 ###############################
 
-# Search Drivers
-if [ $drivers_option -eq 1 ]
-then
-    sudo isenkram-autoinstall-firmware
-fi
-
 # Network Manager: Enabling Interface Management
 # DEs: KDE, Cinnamon
-if [ ! $de_option ] || [ $de_option -eq 1 ] || [ $de_option -ge 6 ] || [ $de_option -eq 5 ]
-then
-    sudo cp /etc/NetworkManager/NetworkManager.conf "/etc/NetworkManager/NetworkManager.conf_backup_$(date)"
-    sudo sed -i "s/managed=false/managed=true/g" /etc/NetworkManager/NetworkManager.conf
-fi
+#if [ ! $de_option ] || [ $de_option -eq 1 ] || [ $de_option -ge 6 ] || [ $de_option -eq 5 ]
+#then
+#    sudo cp /etc/NetworkManager/NetworkManager.conf "/etc/NetworkManager/NetworkManager.conf_backup_$(date)"
+#    sudo sed -i "s/managed=false/managed=true/g" /etc/NetworkManager/NetworkManager.conf
+#fi
 
 # Cinnamon Themes
 if [ $de_option -eq 5 ]
