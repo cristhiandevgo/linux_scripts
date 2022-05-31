@@ -292,6 +292,9 @@ fi
 
 ## End Drivers
 
+###############################
+## sudo install packages
+###############################
 sudo apt-get install ${desktop_enviroment[@]} ${common_packages[@]} ${themes[@]} ${browser[@]} ${drivers[@]} -y
 
 ###############################

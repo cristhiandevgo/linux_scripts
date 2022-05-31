@@ -30,7 +30,7 @@ opi packman
 ###############################
 ## Check updates
 ###############################
-sudo zypper ref && sudo zypper update
+sudo zypper -y ref && sudo zypper update
 
 ###############################
 ## Read vars
@@ -190,7 +190,7 @@ common_packages=(
     inkscape
     libdbus-glib-1-2
     libreoffice
-    libreoffice-l10n-pt_br
+    libreoffice-l10n-pt_BR
     vlc
     wget
 )
@@ -259,6 +259,9 @@ fi
 
 ## End browser
 
+###############################
+## sudo install packages
+###############################
 sudo zypper install -y ${desktop_enviroment[@]} ${common_packages[@]} ${themes[@]} ${browser[@]}
 
 ###############################
