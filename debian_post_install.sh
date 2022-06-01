@@ -89,10 +89,15 @@ then
         gwenview
         kate
         kcalc
+        kget
+        kolourpaint
         kompare
         libreoffice-plasma
         okular
+        plasma-wallpapers-addons
+        plasma-wayland-protocols
         plasma-widgets-addons
+        plasma-workspace-wayland
         qbittorrent
     )
 
