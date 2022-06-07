@@ -108,18 +108,25 @@ then
     # Gnome
     desktop_enviroment=(
         gnome-session
+        eog
+        evince
         gnome-disk-utility
+        gnome-calculator
+        gnome-calendar
+        gnome-contacts
         fonts-cantarell
         gnome-maps
         gnome-music
         gnome-photos
         gnome-software
+        gnome-system-monitor 
         gnome-terminal
         gnome-text-editor
         gnome-tweaks
         gnome-weather
         libreoffice-gnome
         nautilus
+        simple-scan
     )
 
     themes=(
@@ -331,8 +338,8 @@ then
 fi
 
 # Network Manager: Enabling Interface Management
-# DEs: KDE, Cinnamon
-if [ ! $de_option ] || [ $de_option -eq 1 ] || [ $de_option -ge 6 ] || [ $de_option -eq 5 ]
+# DEs: KDE, Gnome, Cinnamon
+if [ ! $de_option ] || [ $de_option -eq 1 ] || [ $de_option -eq 2 ] || [ $de_option -ge 6 ] || [ $de_option -eq 5 ]
 then
     sudo cp /etc/NetworkManager/NetworkManager.conf "/etc/NetworkManager/NetworkManager.conf_backup_$(date)"
     sudo sed -i "s/managed=false/managed=true/g" /etc/NetworkManager/NetworkManager.conf
