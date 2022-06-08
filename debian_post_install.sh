@@ -118,6 +118,7 @@ then
         gnome-maps
         gnome-music
         gnome-photos
+        gnome-shell-extensions
         gnome-software
         gnome-system-monitor 
         gnome-terminal
