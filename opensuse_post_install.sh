@@ -46,9 +46,10 @@ Choose your Desktop Enviroment (Default: KDE Plasma):
 ' de_option
 
 read -p '
-Choose the browser(s) to install (Default: None):
+Choose extra browser(s) to install (Default: None):
+PS: Vivaldi will be installed by default.
 
-1 Mozilla Firefox
+1 Mozilla Firefox (tar.bz2 source)
 2 Chromium
 3 Both
 4 None
@@ -257,6 +258,10 @@ then
     )
 fi
 
+# Vivaldi
+sudo zypper ar https://repo.vivaldi.com/archive/vivaldi-suse.repo
+sudo zypper install -y vivaldi-stable
+
 ## End browser
 
 ###############################
@@ -265,8 +270,10 @@ fi
 sudo zypper install -y ${desktop_enviroment[@]} ${common_packages[@]} ${themes[@]} ${browser[@]}
 
 ###############################
-## Nodejs - LTS
+## Dev Tools
 ###############################
+
+# Nodejs - LTS
 cp "$HOME/.bashrc" "$HOME/.bashrc_backup_$(date)"
 cp "$HOME/.profile" "$HOME/.profile_backup_$(date)"
 mkdir $HOME/.node
@@ -280,7 +287,14 @@ export PATH=$NODEJS_HOME:$PATH
 ' | tee -a ~/.profile ~/.bashrc
 
 . ~/.profile ~/.bashrc
-## End Node - LTS
+
+# Visual Studio Code - vscode
+sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
+sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ntype=rpm-md\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/zypp/repos.d/vscode.repo'
+sudo zypper refresh
+sudo zypper install -y code
+
+## End Dev Tools
 
 ###############################
 ## Last Configurations
