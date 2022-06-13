@@ -30,7 +30,7 @@ opi packman
 ###############################
 ## Check updates
 ###############################
-sudo zypper -y ref && sudo zypper update
+sudo zypper ref && sudo zypper update -y
 
 ###############################
 ## Read vars
