@@ -1,5 +1,5 @@
 #!/bin/bash
-# Post Instalation for Debian with minimal option
+# Post Instalation for OpenSuse with minimal option
 # Author: Ivan Cristhian (Call me Cristhian)
 # GitHub: cristhiandevgo
 # All rights reserved
@@ -24,13 +24,13 @@ echo '
 ##############################
 ## Add opi codecs
 ###############################
-sudo zypper install opi
+sudo zypper install -y opi
 opi packman
 
 ###############################
 ## Check updates
 ###############################
-sudo zypper ref && sudo zypper update -y
+sudo zypper refresh && sudo zypper update -y
 
 ###############################
 ## Read vars
@@ -47,12 +47,12 @@ Choose your Desktop Enviroment (Default: KDE Plasma):
 
 read -p '
 Choose extra browser(s) to install (Default: None):
-PS: Vivaldi will be installed by default.
 
-1 Mozilla Firefox (tar.bz2 source)
+1 Vivaldi
 2 Chromium
-3 Both
-4 None
+3 Mozilla Firefox
+4 All
+5 None
 ' browser_option
 
 read -p '
@@ -204,7 +204,7 @@ common_packages=(
 # Initialize browser var
 browser=()
 
-firefox(){
+firefox_install(){
     ## Mozilla Firefox
     # Install Firefox from Mozilla builds
     cd /tmp/
@@ -237,30 +237,35 @@ firefox(){
     MimeType=text/html;text/xml;application/xhtml+xml;application/xml;application/rss+xml;application/rdf+xml;image/gif;image/jpeg;image/png;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;x-scheme-handler/chrome;video/webm;application/x-xpinstall;' > $HOME/.local/share/applications/Firefox.desktop
 }
 
-# None
-if [ ! $browser_option ] || [ $browser_option -eq 0 ] || [ $browser_option -eq 4 ] || [ $browser_option -ge 5 ]
+# Default None
+if [ ! $browser_option ] || [ $browser_option -eq 0 ] || [ $browser_option -eq 5 ] || [ $browser_option -ge 6 ]
 then
     browser_option=0
 fi
 
-# Mozilla Firefox
-if [ $browser_option -eq 1 ] || [ $browser_option -eq 3 ]
+# Vivaldi
+if [ $browser_option -eq 1 ] || [ $browser_option -eq 4 ]
 then
-    firefox
+    sudo zypper ar https://repo.vivaldi.com/archive/vivaldi-suse.repo
+	browser+=(
+		vivaldi-stable
+	)
 fi
 
 # Chromium
-if [ $browser_option -eq 2 ] || [ $browser_option -eq 3 ]
+if [ $browser_option -eq 2 ] || [ $browser_option -eq 4 ]
 then
-    browser=(
+    browser+=(
         chromium
         chromium-ffmpeg-extra
     )
 fi
 
-# Vivaldi
-sudo zypper ar https://repo.vivaldi.com/archive/vivaldi-suse.repo
-sudo zypper install -y vivaldi-stable
+# Mozilla Firefox
+if [ $browser_option -eq 3 ] || [ $browser_option -eq 4 ]
+then
+    firefox_install
+fi
 
 ## End browser
 
