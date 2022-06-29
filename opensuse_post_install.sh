@@ -1,7 +1,9 @@
 #!/bin/bash
-# Post Instalation for OpenSuse with minimal option
+# Post Instalation for OpenSuse with minimal packages options
 # Author: Ivan Cristhian (Call me Cristhian)
 # GitHub: cristhiandevgo
+# Mail: ivancristhian@hotmail.com
+# Site: https://ivan-cristhian.web.app
 # All rights reserved
 
 echo '
@@ -20,6 +22,74 @@ echo '
 
 
 '
+##############################
+## Functions
+###############################
+firefox_install(){
+    ## Mozilla Firefox
+    # Install Firefox from Mozilla builds
+    cd /tmp/
+    wget 'https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=pt-BR' -O firefox.tar.bz2
+    tar -xjf firefox.tar.bz2
+    sudo mv -f firefox /opt/
+
+    mkdir -p $HOME/.local/share/applications/
+
+    echo -e '[Desktop Entry]
+    Version=1.0
+    Name=Firefox Web Browser
+    Comment=Browse the World Wide Web
+    Exec=/opt/firefox/firefox %u
+    GenericName=Web Browser
+    Icon=/opt/firefox/browser/chrome/icons/default/default128.png
+    MimeType=
+    Name=Firefox Web Browser
+    NoDisplay=false
+    Path=
+    StartupNotify=true
+    Terminal=false
+    TerminalOptions=
+    Type=Application
+    X-DBUS-ServiceName=
+    X-DBUS-StartupType=
+    X-KDE-SubstituteUID=false
+    X-KDE-Username=
+    Categories=GNOME;GTK;Network;WebBrowser;
+    MimeType=text/html;text/xml;application/xhtml+xml;application/xml;application/rss+xml;application/rdf+xml;image/gif;image/jpeg;image/png;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;x-scheme-handler/chrome;video/webm;application/x-xpinstall;' > $HOME/.local/share/applications/Firefox.desktop
+}
+
+browser_setup(){
+	read -p "$1? [y/n]: " browser_option
+	
+	# Default no
+	if [[ ! $browser_option ]] || [[ $browser_option != 'y' ]]
+	then
+		browser_option='n'
+	else
+		if [[ $1 == "Vivaldi" ]]
+		then
+			sudo zypper ar https://repo.vivaldi.com/archive/vivaldi-suse.repo
+			browser+=(
+				vivaldi-stable
+			)
+		fi
+
+		if [[ $1 == "Chromium" ]]
+		then
+			browser+=(
+				chromium
+				chromium-ffmpeg-extra
+			)
+		fi
+		
+		if [[ $1 == "Mozilla Firefox (tar.bz2)" ]]
+		then
+			firefox_install
+		fi
+	fi
+}
+
+## End Functions
 
 ##############################
 ## Add opi codecs
@@ -35,7 +105,9 @@ sudo zypper refresh && sudo zypper update -y
 ###############################
 ## Read vars
 ###############################
-read -p '
+
+# Desktop Enviroment
+read -p "
 Choose your Desktop Enviroment (Default: KDE Plasma):
 
 1 KDE Plasma
@@ -43,24 +115,23 @@ Choose your Desktop Enviroment (Default: KDE Plasma):
 3 Mate
 4 XFCE
 5 Cinnamon
-' de_option
+" de_option
 
-read -p '
-Choose extra browser(s) to install (Default: None):
+# Browser
+echo "
+Choose wich browser(s) do you want to install (Default: none)
+"
 
-1 Vivaldi
-2 Chromium
-3 Mozilla Firefox
-4 All
-5 None
-' browser_option
+browser_setup "Vivaldi"
+browser_setup "Chromium"
+browser_setup "Mozilla Firefox (tar.bz2)"
 
-read -p '
-Reboot after install? (Default: Yes):
+read -p "
+Reboot after install? (Default: yes):
 
 1 Yes
 2 No
-' reboot_option
+" reboot_option
 
 ## End Read vars
 
@@ -196,78 +267,6 @@ common_packages=(
     wget
 )
 ## End Common packages
-
-###############################
-## Browser
-###############################
-
-# Initialize browser var
-browser=()
-
-firefox_install(){
-    ## Mozilla Firefox
-    # Install Firefox from Mozilla builds
-    cd /tmp/
-    wget 'https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=pt-BR' -O firefox.tar.bz2
-    tar -xjf firefox.tar.bz2
-    sudo mv -f firefox /opt/
-
-    mkdir -p $HOME/.local/share/applications/
-
-    echo -e '[Desktop Entry]
-    Version=1.0
-    Name=Firefox Web Browser
-    Comment=Browse the World Wide Web
-    Exec=/opt/firefox/firefox %u
-    GenericName=Web Browser
-    Icon=/opt/firefox/browser/chrome/icons/default/default128.png
-    MimeType=
-    Name=Firefox Web Browser
-    NoDisplay=false
-    Path=
-    StartupNotify=true
-    Terminal=false
-    TerminalOptions=
-    Type=Application
-    X-DBUS-ServiceName=
-    X-DBUS-StartupType=
-    X-KDE-SubstituteUID=false
-    X-KDE-Username=
-    Categories=GNOME;GTK;Network;WebBrowser;
-    MimeType=text/html;text/xml;application/xhtml+xml;application/xml;application/rss+xml;application/rdf+xml;image/gif;image/jpeg;image/png;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;x-scheme-handler/chrome;video/webm;application/x-xpinstall;' > $HOME/.local/share/applications/Firefox.desktop
-}
-
-# Default None
-if [ ! $browser_option ] || [ $browser_option -eq 0 ] || [ $browser_option -eq 5 ] || [ $browser_option -ge 6 ]
-then
-    browser_option=0
-fi
-
-# Vivaldi
-if [ $browser_option -eq 1 ] || [ $browser_option -eq 4 ]
-then
-    sudo zypper ar https://repo.vivaldi.com/archive/vivaldi-suse.repo
-	browser+=(
-		vivaldi-stable
-	)
-fi
-
-# Chromium
-if [ $browser_option -eq 2 ] || [ $browser_option -eq 4 ]
-then
-    browser+=(
-        chromium
-        chromium-ffmpeg-extra
-    )
-fi
-
-# Mozilla Firefox
-if [ $browser_option -eq 3 ] || [ $browser_option -eq 4 ]
-then
-    firefox_install
-fi
-
-## End browser
 
 ###############################
 ## sudo install packages
