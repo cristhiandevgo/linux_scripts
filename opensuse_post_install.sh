@@ -127,11 +127,7 @@ browser_setup "Chromium"
 browser_setup "Mozilla Firefox (tar.bz2)"
 
 read -p "
-Reboot after install? (Default: yes):
-
-1 Yes
-2 No
-" reboot_option
+Reboot after install? (Default: no) [y/n]: " reboot_option
 
 ## End Read vars
 
@@ -331,8 +327,10 @@ Finished!
 
 '
 
-# Reboot Option
-if [ ! $reboot_option ] || [ $reboot_option -eq 0 ] || [ $reboot_option -eq 1 ] || [ $reboot_option -ge 3 ]
+# Reboot Option (Default no)
+if [[ ! $reboot_option ]] || [[ $reboot_option != 'y' ]]
 then
-    sudo reboot
+    reboot_option="n"
+else
+	sudo reboot
 fi
