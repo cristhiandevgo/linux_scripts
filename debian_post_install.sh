@@ -68,8 +68,8 @@ browser_setup(){
 	else
 		if [[ $1 == "Vivaldi" ]]
 		then
-			wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | sudo apt-key add -
-			sudo add-apt-repository 'deb https://repo.vivaldi.com/archive/deb/ stable main'
+			wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | gpg --dearmor | sudo dd of=/usr/share/keyrings/vivaldi-browser.gpg
+			echo "deb [signed-by=/usr/share/keyrings/vivaldi-browser.gpg arch=$(dpkg --print-architecture)] https://repo.vivaldi.com/archive/deb/ stable main" | sudo dd of=/etc/apt/sources.list.d/vivaldi-archive.list
 			browser+=(
 				vivaldi-stable
 			)
@@ -175,7 +175,9 @@ then
         qbittorrent
     )
 
-    themes=(
+    themes+=(
+		sddm-theme-breeze
+		sddm-theme-debian-breeze
     )
 elif [ $de_option -eq 2 ]
 then
@@ -204,7 +206,7 @@ then
         simple-scan
     )
 
-    themes=(
+    themes+=(
     )
 elif [ $de_option -eq 3 ]
 then
@@ -218,7 +220,7 @@ then
         synaptic
     )
 
-    themes=(
+    themes+=(
     )
 elif [ $de_option -eq 4 ]
 then
@@ -232,7 +234,7 @@ then
         thunderbird
     )
 
-    themes=(
+    themes+=(
     )
 elif [ $de_option -eq 5 ]
 then
