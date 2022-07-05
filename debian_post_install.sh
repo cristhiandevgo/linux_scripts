@@ -1,7 +1,9 @@
 #!/bin/bash
-# Post Instalation for Debian with minimal option
+# Post Instalation for Debian with minimal packages options
 # Author: Ivan Cristhian (Call me Cristhian)
 # GitHub: cristhiandevgo
+# Mail: ivancristhian@hotmail.com
+# Site: https://ivan-cristhian.web.app
 # All rights reserved
 
 echo '
@@ -20,214 +22,10 @@ echo '
 
 
 '
-
 ##############################
-## Add contrib and non-free to sources.list
+## Functions
 ###############################
-sudo cp "/etc/apt/sources.list" "/etc/apt/sources.list_backup_$(date)"
-
-sudo sed -i "s/.*deb http:\/\/deb.debian.org\/debian\/ bookworm main.*/deb http:\/\/deb.debian.org\/debian\/ bookworm main contrib non-free/g" /etc/apt/sources.list
-sudo sed -i "s/.*deb-src http:\/\/deb.debian.org\/debian\/ bookworm main.*/deb-src http:\/\/deb.debian.org\/debian\/ bookworm main contrib non-free/g" /etc/apt/sources.list
-
-sudo sed -i "s/.*deb http:\/\/security.debian.org\/debian-security bookworm-security main.*/deb http:\/\/security.debian.org\/debian-security bookworm-security main contrib non-free/g" /etc/apt/sources.list
-sudo sed -i "s/.*deb-src http:\/\/security.debian.org\/debian-security bookworm-security main.*/deb-src http:\/\/security.debian.org\/debian-security bookworm-security main contrib non-free/g" /etc/apt/sources.list
-
-###############################
-## Check updates
-###############################
-sudo apt-get update && sudo apt-get upgrade -y
-
-###############################
-## Read vars
-###############################
-read -p '
-Choose your Desktop Enviroment (Default: KDE Plasma):
-
-1 KDE Plasma
-2 Gnome
-3 Mate
-4 XFCE
-5 Cinnamon
-' de_option
-
-read -p '
-Choose the browser(s) to install (Default: None):
-
-1 Mozilla Firefox
-2 Chromium
-3 Both
-4 None
-' browser_option
-
-read -p '
-Search for extra drivers? (Default: No):
-
-1 Yes
-2 No
-' drivers_option
-
-read -p '
-Reboot after install? (Default: Yes):
-
-1 Yes
-2 No
-' reboot_option
-
-## End Read vars
-
-###############################
-## Desktop Enviroment
-###############################
-
-if [ ! $de_option ] || [ $de_option -eq 1 ] || [ $de_option -ge 6 ]
-then
-    # KDE Plasma
-    desktop_enviroment=(
-        kde-plasma-desktop
-        kde-spectacle
-        ark
-        gwenview
-        kate
-        kcalc
-        kget
-        kolourpaint
-        kompare
-        libreoffice-plasma
-        okular
-        plasma-wallpapers-addons
-        plasma-wayland-protocols
-        plasma-widgets-addons
-        plasma-workspace-wayland
-        qbittorrent
-    )
-
-    themes=(
-    )
-elif [ $de_option -eq 2 ]
-then
-    # Gnome
-    desktop_enviroment=(
-        gnome-session
-        eog
-        evince
-        gnome-disk-utility
-        gnome-calculator
-        gnome-calendar
-        gnome-contacts
-        fonts-cantarell
-        gnome-maps
-        gnome-music
-        gnome-photos
-        gnome-shell-extensions
-        gnome-software
-        gnome-system-monitor 
-        gnome-terminal
-        gnome-text-editor
-        gnome-tweaks
-        gnome-weather
-        libreoffice-gnome
-        nautilus
-        simple-scan
-    )
-
-    themes=(
-    )
-elif [ $de_option -eq 3 ]
-then
-    # Mate
-    desktop_enviroment=(
-        mate-desktop-environment
-        mate-desktop-environment-extras
-        libreoffice-gtk3
-        lightdm
-        network-manager-gnome
-        synaptic
-    )
-
-    themes=(
-    )
-elif [ $de_option -eq 4 ]
-then
-     # XFCE
-    desktop_enviroment=(
-        xfce4
-        xfce4-goodies
-        libreoffice-gtk3
-        menulibre
-        synaptic
-        thunderbird
-    )
-
-    themes=(
-    )
-elif [ $de_option -eq 5 ]
-then
-     # Cinnamon
-    desktop_enviroment=(
-        cinnamon
-        blueman
-        brasero
-        cheese
-        cups
-        deja-dup
-        eog
-        evince
-        gdebi
-        gedit
-        gnome-font-viewer
-        gnome-screenshot
-        gnome-software
-        gnome-system-monitor
-        gnome-terminal
-        gnome-user-share
-        gnote
-        gdebi
-        libreoffice-gnome
-        mate-calc
-        simple-scan
-        synaptic
-        sound-juicer
-        thunderbird
-    )
-
-    themes=(
-        arc-theme
-        mate-themes
-        papirus-icon-theme
-    )
-fi
-## End Desktop Enviroment
-
-###############################
-## Common packages
-###############################
-common_packages=(
-    curl
-    firmware-linux
-    firmware-linux-free
-    firmware-linux-nonfree
-    fonts-liberation
-    fonts-noto
-    g++
-    gimp
-    git
-    inkscape
-    libdbus-glib-1-2
-    libreoffice
-    libreoffice-l10n-pt-br
-    vlc
-    wget
-)
-## End Common packages
-
-###############################
-## Browser
-###############################
-
-# Initialize browser var
-browser=()
-
-firefox(){
+firefox_install(){
     ## Mozilla Firefox
     # Install Firefox from Mozilla builds
     cd /tmp/
@@ -260,28 +58,241 @@ firefox(){
     MimeType=text/html;text/xml;application/xhtml+xml;application/xml;application/rss+xml;application/rdf+xml;image/gif;image/jpeg;image/png;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;x-scheme-handler/chrome;video/webm;application/x-xpinstall;' > $HOME/.local/share/applications/Firefox.desktop
 }
 
-# None
-if [ ! $browser_option ] || [ $browser_option -eq 0 ] || [ $browser_option -eq 4 ] || [ $browser_option -ge 5 ]
-then
-    browser_option=0
-fi
+browser_setup(){
+	read -p "$1? [y/n]: " browser_option
+	
+	# Default no
+	if [[ ! $browser_option ]] || [[ $browser_option != 'y' ]]
+	then
+		browser_option='n'
+	else
+		if [[ $1 == "Vivaldi" ]]
+		then
+			wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | sudo apt-key add -
+			sudo add-apt-repository 'deb https://repo.vivaldi.com/archive/deb/ stable main'
+			browser+=(
+				vivaldi-stable
+			)
+		fi
 
-# Mozilla Firefox
-if [ $browser_option -eq 1 ] || [ $browser_option -eq 3 ]
-then
-    firefox
-fi
+		if [[ $1 == "Chromium" ]]
+		then
+			browser+=(
+				chromium
+        		chromium-l10n
+			)
+		fi
+		
+		if [[ $1 == "Mozilla Firefox (tar.bz2)" ]]
+		then
+			firefox_install
+		fi
+	fi
+}
 
-# Chromium
-if [ $browser_option -eq 2 ] || [ $browser_option -eq 3 ]
+pre_install(){
+	sudo apt-get install wget gpg curl -y
+}
+
+refresh_packages(){
+	sudo apt-get update && sudo apt-get upgrade -y
+}
+
+## End Functions
+
+###############################
+## Read vars
+###############################
+read -p '
+Choose your Desktop Enviroment (Default: KDE Plasma):
+
+1 KDE Plasma
+2 Gnome
+3 Mate
+4 XFCE
+5 Cinnamon
+' de_option
+
+# Browser
+echo "
+Choose wich browser(s) do you want to install (Default: none)
+"
+
+browser_setup "Vivaldi"
+browser_setup "Chromium"
+browser_setup "Mozilla Firefox (tar.bz2)"
+
+read -p "
+Install all drivers? (Default: no) [y/n]: " drivers_option
+
+read -p "
+Reboot after install? (Default: no) [y/n]: " reboot_option
+
+## End Read vars
+
+##############################
+## Config packages
+###############################
+
+# Add contrib and non-free to sources.list
+sudo cp "/etc/apt/sources.list" "/etc/apt/sources.list_backup_$(date)"
+
+sudo sed -i "s/.*deb http:\/\/deb.debian.org\/debian\/ bookworm main.*/deb http:\/\/deb.debian.org\/debian\/ bookworm main contrib non-free/g" /etc/apt/sources.list
+sudo sed -i "s/.*deb-src http:\/\/deb.debian.org\/debian\/ bookworm main.*/deb-src http:\/\/deb.debian.org\/debian\/ bookworm main contrib non-free/g" /etc/apt/sources.list
+
+sudo sed -i "s/.*deb http:\/\/security.debian.org\/debian-security bookworm-security main.*/deb http:\/\/security.debian.org\/debian-security bookworm-security main contrib non-free/g" /etc/apt/sources.list
+sudo sed -i "s/.*deb-src http:\/\/security.debian.org\/debian-security bookworm-security main.*/deb-src http:\/\/security.debian.org\/debian-security bookworm-security main contrib non-free/g" /etc/apt/sources.list
+
+# Update Packages
+refresh_packages
+pre_install
+
+## End Config packages
+
+###############################
+## Desktop Enviroment
+###############################
+
+if [ ! $de_option ] || [ $de_option -eq 1 ] || [ $de_option -ge 6 ]
 then
-    browser=(
-        chromium
-        chromium-l10n
+    # KDE Plasma
+    desktop_enviroment+=(
+        kde-plasma-desktop
+        kde-spectacle
+        ark
+        gwenview
+        kate
+        kcalc
+        kget
+        kolourpaint
+        kompare
+        libreoffice-plasma
+        okular
+        plasma-wallpapers-addons
+        plasma-wayland-protocols
+        plasma-widgets-addons
+        plasma-workspace-wayland
+        qbittorrent
+    )
+
+    themes=(
+    )
+elif [ $de_option -eq 2 ]
+then
+    # Gnome
+    desktop_enviroment+=(
+        gnome-session
+        eog
+        evince
+        gnome-disk-utility
+        gnome-calculator
+        gnome-calendar
+        gnome-contacts
+        fonts-cantarell
+        gnome-maps
+        gnome-music
+        gnome-photos
+        gnome-shell-extensions
+        gnome-software
+        gnome-system-monitor 
+        gnome-terminal
+        gnome-text-editor
+        gnome-tweaks
+        gnome-weather
+        libreoffice-gnome
+        nautilus
+        simple-scan
+    )
+
+    themes=(
+    )
+elif [ $de_option -eq 3 ]
+then
+    # Mate
+    desktop_enviroment+=(
+        mate-desktop-environment
+        mate-desktop-environment-extras
+        libreoffice-gtk3
+        lightdm
+        network-manager-gnome
+        synaptic
+    )
+
+    themes=(
+    )
+elif [ $de_option -eq 4 ]
+then
+     # XFCE
+    desktop_enviroment+=(
+        xfce4
+        xfce4-goodies
+        libreoffice-gtk3
+        menulibre
+        synaptic
+        thunderbird
+    )
+
+    themes=(
+    )
+elif [ $de_option -eq 5 ]
+then
+     # Cinnamon
+    desktop_enviroment+=(
+        cinnamon
+        blueman
+        brasero
+        cheese
+        cups
+        deja-dup
+        eog
+        evince
+        gdebi
+        gedit
+        gnome-font-viewer
+        gnome-screenshot
+        gnome-software
+        gnome-system-monitor
+        gnome-terminal
+        gnome-user-share
+        gnote
+        gdebi
+        libreoffice-gnome
+        mate-calc
+        simple-scan
+        synaptic
+        sound-juicer
+        thunderbird
+    )
+
+    themes+=(
+        arc-theme
+        mate-themes
+        papirus-icon-theme
     )
 fi
+## End Desktop Enviroment
 
-## End browser
+###############################
+## Common packages
+###############################
+common_packages+=(
+    curl
+    firmware-linux
+    firmware-linux-free
+    firmware-linux-nonfree
+    fonts-liberation
+    fonts-noto
+    g++
+    gimp
+    git
+    inkscape
+    libdbus-glib-1-2
+    libreoffice
+    libreoffice-l10n-pt-br
+    vlc
+    wget
+)
+## End Common packages
 
 ###############################
 ## Drivers
@@ -290,53 +301,60 @@ fi
 # Initialize drivers var
 drivers=()
 
-# None
-if [ ! $drivers_option ] || [ $drivers_option -eq 0 ] || [ $drivers_option -ge 3 ]
+# All drivers Option (Default no)
+if [[ ! $drivers_option ]] || [[ $drivers_option != 'y' ]]
 then
-    drivers_option=0
-fi
-
-if [ $drivers_option -eq 1 ]
-then
-    drivers=(
-        isenkram-cli
+    drivers_option="n"
+else
+	drivers+=(
+        firmware-*
     )
 fi
 
 ## End Drivers
 
 ###############################
-## sudo install packages
+## Dev Tools
 ###############################
-sudo apt-get install ${desktop_enviroment[@]} ${common_packages[@]} ${themes[@]} ${browser[@]} ${drivers[@]} -y
+dev_packages=()
 
-###############################
-## Nodejs - LTS
-###############################
+# Nodejs - LTS
 cp "$HOME/.bashrc" "$HOME/.bashrc_backup_$(date)"
 cp "$HOME/.profile" "$HOME/.profile_backup_$(date)"
 mkdir $HOME/.node
-curl https://nodejs.org/dist/v16.15.0/node-v16.15.0-linux-x64.tar.xz --output node-v16.15.0-linux-x64.tar.xz
-tar -xf node-v16.15.0-linux-x64.tar.xz -C $HOME/.node/
+curl https://nodejs.org/dist/v16.15.1/node-v16.15.1-linux-x64.tar.xz --output node-v16.15.1-linux-x64.tar.xz
+tar -xf node-v16.15.1-linux-x64.tar.xz -C $HOME/.node/
 
 echo -n '
 # Node
-export NODEJS_HOME=$HOME/.node/node-v16.15.0-linux-x64/bin
+export NODEJS_HOME=$HOME/.node/node-v16.15.1-linux-x64/bin
 export PATH=$NODEJS_HOME:$PATH
 ' | tee -a ~/.profile ~/.bashrc
 
 . ~/.profile ~/.bashrc
-## End Node - LTS
+# End Node - LTS
+
+# Visual Studio Code - vscode
+wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+sudo install -o root -g root -m 644 packages.microsoft.gpg /etc/apt/trusted.gpg.d/
+sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
+rm -f packages.microsoft.gpg
+
+dev_packages+=(
+	code
+)
+
+# End Dev Tools
+
+###############################
+## sudo install packages
+###############################
+refresh_packages
+sudo apt-get install ${desktop_enviroment[@]} ${common_packages[@]} ${themes[@]} ${browser[@]} ${drivers[@]} ${dev_packages[@]} -y
 
 ###############################
 ## Last Configurations
 ###############################
-
-# Search Drivers
-if [ $drivers_option -eq 1 ]
-then
-    sudo isenkram-autoinstall-firmware
-fi
 
 # Network Manager: Enabling Interface Management
 # DEs: KDE, Gnome, Cinnamon
@@ -365,8 +383,10 @@ Finished!
 
 '
 
-# Reboot Option
-if [ ! $reboot_option ] || [ $reboot_option -eq 0 ] || [ $reboot_option -eq 1 ] || [ $reboot_option -ge 3 ]
+# Reboot Option (Default no)
+if [[ ! $reboot_option ]] || [[ $reboot_option != 'y' ]]
 then
-    sudo reboot
+    reboot_option="n"
+else
+	sudo reboot
 fi
