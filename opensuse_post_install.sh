@@ -88,8 +88,18 @@ browser_setup(){
 		fi
 	fi
 }
+pre_install(){
+    sudo zypper install -y wget curl gpg2
+}
+
+refresh_packages(){
+    sudo zypper refresh && sudo zypper update -y
+}
 
 ## End Functions
+
+# Install Script Dependencies
+pre_install
 
 ##############################
 ## Add opi codecs
@@ -100,15 +110,15 @@ opi packman
 ###############################
 ## Check updates
 ###############################
-sudo zypper refresh && sudo zypper update -y
+refresh_packages
 
 ###############################
 ## Read vars
 ###############################
 
-# Desktop Enviroment
+# Desktop Environment
 read -p "
-Choose your Desktop Enviroment (Default: KDE Plasma):
+Choose your Desktop Environment (Default: KDE Plasma):
 
 1 KDE Plasma
 2 Gnome
@@ -132,13 +142,13 @@ Reboot after install? (Default: no) [y/n]: " reboot_option
 ## End Read vars
 
 ###############################
-## Desktop Enviroment
+## Desktop Environment
 ###############################
 
 if [ ! $de_option ] || [ $de_option -eq 1 ] || [ $de_option -ge 6 ]
 then
     # KDE Plasma
-    desktop_enviroment=(
+    desktop_environment=(
         patterns-kde-kde_plasma
         dolphin
         ark
@@ -160,7 +170,7 @@ then
 elif [ $de_option -eq 2 ]
 then
     # Gnome
-    desktop_enviroment=(
+    desktop_environment=(
         gnome-session
         gnome-disk-utility
         fonts-cantarell
@@ -181,7 +191,7 @@ then
 elif [ $de_option -eq 3 ]
 then
     # Mate
-    desktop_enviroment=(
+    desktop_environment=(
         mate-desktop-environment
         mate-desktop-environment-extras
         libreoffice-gtk3
@@ -195,7 +205,7 @@ then
 elif [ $de_option -eq 4 ]
 then
      # XFCE
-    desktop_enviroment=(
+    desktop_environment=(
         xfce4
         xfce4-goodies
         libreoffice-gtk3
@@ -209,7 +219,7 @@ then
 elif [ $de_option -eq 5 ]
 then
      # Cinnamon
-    desktop_enviroment=(
+    desktop_environment=(
         cinnamon
         blueman
         brasero
@@ -242,7 +252,7 @@ then
         papirus-icon-theme
     )
 fi
-## End Desktop Enviroment
+## End Desktop Environment
 
 ###############################
 ## Common packages
@@ -265,11 +275,6 @@ common_packages=(
 ## End Common packages
 
 ###############################
-## sudo install packages
-###############################
-sudo zypper install -y ${desktop_enviroment[@]} ${common_packages[@]} ${themes[@]} ${browser[@]}
-
-###############################
 ## Dev Tools
 ###############################
 
@@ -277,12 +282,12 @@ sudo zypper install -y ${desktop_enviroment[@]} ${common_packages[@]} ${themes[@
 cp "$HOME/.bashrc" "$HOME/.bashrc_backup_$(date)"
 cp "$HOME/.profile" "$HOME/.profile_backup_$(date)"
 mkdir $HOME/.node
-curl https://nodejs.org/dist/v16.15.0/node-v16.15.0-linux-x64.tar.xz --output node-v16.15.0-linux-x64.tar.xz
-tar -xf node-v16.15.0-linux-x64.tar.xz -C $HOME/.node/
+curl https://nodejs.org/dist/v16.15.1/node-v16.15.1-linux-x64.tar.xz --output node-v16.15.1-linux-x64.tar.xz
+tar -xf node-v16.15.1-linux-x64.tar.xz -C $HOME/.node/
 
 echo -n '
 # Node
-export NODEJS_HOME=$HOME/.node/node-v16.15.0-linux-x64/bin
+export NODEJS_HOME=$HOME/.node/node-v16.15.1-linux-x64/bin
 export PATH=$NODEJS_HOME:$PATH
 ' | tee -a ~/.profile ~/.bashrc
 
@@ -291,10 +296,18 @@ export PATH=$NODEJS_HOME:$PATH
 # Visual Studio Code - vscode
 sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
 sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ntype=rpm-md\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" > /etc/zypp/repos.d/vscode.repo'
-sudo zypper refresh
-sudo zypper install -y code
+refresh_packages
+
+dev_packages+=(
+	code
+)
 
 ## End Dev Tools
+
+###############################
+## sudo install packages
+###############################
+sudo zypper install -y ${desktop_environment[@]} ${common_packages[@]} ${themes[@]} ${browser[@]} ${dev_packages[@]}
 
 ###############################
 ## Last Configurations

@@ -12,7 +12,6 @@ driver=()
 if [ ! $drivers_option ] || [ $drivers_option -eq 0 ] || [ $drivers_option -ge 3 ]
 then
     drivers_option=0
-    echo "none"
 fi
 
 if [ $drivers_option -eq 1 ]

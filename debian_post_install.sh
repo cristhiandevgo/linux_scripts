@@ -100,11 +100,14 @@ refresh_packages(){
 
 ## End Functions
 
+# Install Script Dependencies
+pre_install
+
 ###############################
 ## Read vars
 ###############################
 read -p '
-Choose your Desktop Enviroment (Default: KDE Plasma):
+Choose your Desktop Environment (Default: KDE Plasma):
 
 1 KDE Plasma
 2 Gnome
@@ -145,18 +148,17 @@ sudo sed -i "s/.*deb-src http:\/\/security.debian.org\/debian-security bookworm-
 
 # Update Packages
 refresh_packages
-pre_install
 
 ## End Config packages
 
 ###############################
-## Desktop Enviroment
+## Desktop Environment
 ###############################
 
 if [ ! $de_option ] || [ $de_option -eq 1 ] || [ $de_option -ge 6 ]
 then
     # KDE Plasma
-    desktop_enviroment+=(
+    desktop_environment+=(
         kde-plasma-desktop
         kde-spectacle
         ark
@@ -182,7 +184,7 @@ then
 elif [ $de_option -eq 2 ]
 then
     # Gnome
-    desktop_enviroment+=(
+    desktop_environment+=(
         gnome-session
         eog
         evince
@@ -211,7 +213,7 @@ then
 elif [ $de_option -eq 3 ]
 then
     # Mate
-    desktop_enviroment+=(
+    desktop_environment+=(
         mate-desktop-environment
         mate-desktop-environment-extras
         libreoffice-gtk3
@@ -225,7 +227,7 @@ then
 elif [ $de_option -eq 4 ]
 then
      # XFCE
-    desktop_enviroment+=(
+    desktop_environment+=(
         xfce4
         xfce4-goodies
         libreoffice-gtk3
@@ -239,7 +241,7 @@ then
 elif [ $de_option -eq 5 ]
 then
      # Cinnamon
-    desktop_enviroment+=(
+    desktop_environment+=(
         cinnamon
         blueman
         brasero
@@ -272,7 +274,7 @@ then
         papirus-icon-theme
     )
 fi
-## End Desktop Enviroment
+## End Desktop Environment
 
 ###############################
 ## Common packages
@@ -352,7 +354,7 @@ dev_packages+=(
 ## sudo install packages
 ###############################
 refresh_packages
-sudo apt-get install ${desktop_enviroment[@]} ${common_packages[@]} ${themes[@]} ${browser[@]} ${drivers[@]} ${dev_packages[@]} -y
+sudo apt-get install ${desktop_environment[@]} ${common_packages[@]} ${themes[@]} ${browser[@]} ${drivers[@]} ${dev_packages[@]} -y
 
 ###############################
 ## Last Configurations
