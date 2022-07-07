@@ -156,6 +156,7 @@ then
         gwenview5
         kate
         kcalc
+        kget
         kolourpaint
         konsole
         kompare
@@ -266,7 +267,7 @@ common_packages=(
     gimp
     git
     inkscape
-    libdbus-glib-1-2
+    dbus-1-glib
     libreoffice
     libreoffice-l10n-pt_BR
     vlc
