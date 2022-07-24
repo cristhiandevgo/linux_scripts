@@ -153,6 +153,7 @@ then
         dolphin
         ark
         discover
+		gnome-keyring
         gwenview5
         kate
         kcalc
