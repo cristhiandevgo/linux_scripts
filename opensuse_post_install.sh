@@ -149,23 +149,23 @@ if [ ! $de_option ] || [ $de_option -eq 1 ] || [ $de_option -ge 6 ]
 then
     # KDE Plasma
     desktop_environment=(
-        patterns-kde-kde_plasma
-        dolphin
-        ark
-        discover
+		patterns-kde-kde_plasma
+		dolphin
+		ark
+		discover
 		gnome-keyring
 		gwenview5
-        kate
-        kcalc
-        kget
-        kolourpaint
-        konsole
-        kompare
-        libreoffice-qt5
-        okular
-        qbittorrent
-        spectacle
-    )
+		kate
+		kcalc
+		kget
+		kolourpaint
+		konsole
+		kompare
+		libreoffice-qt5
+		okular
+		qbittorrent
+		spectacle
+	)
 
     themes=(
     )
