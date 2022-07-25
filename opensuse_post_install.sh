@@ -154,7 +154,7 @@ then
         ark
         discover
 		gnome-keyring
-        gwenview5
+		gwenview5
         kate
         kcalc
         kget
