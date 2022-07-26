@@ -155,6 +155,7 @@ then
 		discover
 		gnome-keyring
 		gwenview5
+        kamoso
 		kate
 		kcalc
 		kget
