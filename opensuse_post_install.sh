@@ -174,19 +174,6 @@ elif [ $de_option -eq 2 ]
 then
     # Gnome
     desktop_environment=(
-        gnome-session
-        gnome-disk-utility
-        fonts-cantarell
-        gnome-maps
-        gnome-music
-        gnome-photos
-        gnome-software
-        gnome-terminal
-        gnome-text-editor
-        gnome-tweaks
-        gnome-weather
-        libreoffice-gnome
-        nautilus
     )
 
     themes=(
@@ -195,12 +182,6 @@ elif [ $de_option -eq 3 ]
 then
     # Mate
     desktop_environment=(
-        mate-desktop-environment
-        mate-desktop-environment-extras
-        libreoffice-gtk3
-        lightdm
-        network-manager-gnome
-        synaptic
     )
 
     themes=(
@@ -209,12 +190,6 @@ elif [ $de_option -eq 4 ]
 then
      # XFCE
     desktop_environment=(
-        xfce4
-        xfce4-goodies
-        libreoffice-gtk3
-        menulibre
-        synaptic
-        thunderbird
     )
 
     themes=(
@@ -223,36 +198,9 @@ elif [ $de_option -eq 5 ]
 then
      # Cinnamon
     desktop_environment=(
-        cinnamon
-        blueman
-        brasero
-        cheese
-        cups
-        deja-dup
-        eog
-        evince
-        gdebi
-        gedit
-        gnome-font-viewer
-        gnome-screenshot
-        gnome-software
-        gnome-system-monitor
-        gnome-terminal
-        gnome-user-share
-        gnote
-        gdebi
-        libreoffice-gnome
-        mate-calc
-        simple-scan
-        synaptic
-        sound-juicer
-        thunderbird
     )
 
     themes=(
-        arc-theme
-        mate-themes
-        papirus-icon-theme
     )
 fi
 ## End Desktop Environment
