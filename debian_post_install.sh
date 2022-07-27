@@ -22,7 +22,8 @@ echo '
 
 
 '
-##############################
+
+###############################
 ## Functions
 ###############################
 firefox_install(){
@@ -104,6 +105,24 @@ refresh_packages(){
 pre_install
 
 ###############################
+## Config packages
+###############################
+
+# Add contrib and non-free to sources.list
+sudo cp "/etc/apt/sources.list" "/etc/apt/sources.list_backup_$(date)"
+
+sudo sed -i "s/.*deb http:\/\/deb.debian.org\/debian\/ bookworm main.*/deb http:\/\/deb.debian.org\/debian\/ bookworm main contrib non-free/g" /etc/apt/sources.list
+sudo sed -i "s/.*deb-src http:\/\/deb.debian.org\/debian\/ bookworm main.*/deb-src http:\/\/deb.debian.org\/debian\/ bookworm main contrib non-free/g" /etc/apt/sources.list
+
+sudo sed -i "s/.*deb http:\/\/security.debian.org\/debian-security bookworm-security main.*/deb http:\/\/security.debian.org\/debian-security bookworm-security main contrib non-free/g" /etc/apt/sources.list
+sudo sed -i "s/.*deb-src http:\/\/security.debian.org\/debian-security bookworm-security main.*/deb-src http:\/\/security.debian.org\/debian-security bookworm-security main contrib non-free/g" /etc/apt/sources.list
+
+# Update Packages
+refresh_packages
+
+## End Config packages
+
+###############################
 ## Read vars
 ###############################
 read -p '
@@ -133,24 +152,6 @@ Reboot after install? (Default: no) [y/n]: " reboot_option
 
 ## End Read vars
 
-##############################
-## Config packages
-###############################
-
-# Add contrib and non-free to sources.list
-sudo cp "/etc/apt/sources.list" "/etc/apt/sources.list_backup_$(date)"
-
-sudo sed -i "s/.*deb http:\/\/deb.debian.org\/debian\/ bookworm main.*/deb http:\/\/deb.debian.org\/debian\/ bookworm main contrib non-free/g" /etc/apt/sources.list
-sudo sed -i "s/.*deb-src http:\/\/deb.debian.org\/debian\/ bookworm main.*/deb-src http:\/\/deb.debian.org\/debian\/ bookworm main contrib non-free/g" /etc/apt/sources.list
-
-sudo sed -i "s/.*deb http:\/\/security.debian.org\/debian-security bookworm-security main.*/deb http:\/\/security.debian.org\/debian-security bookworm-security main contrib non-free/g" /etc/apt/sources.list
-sudo sed -i "s/.*deb-src http:\/\/security.debian.org\/debian-security bookworm-security main.*/deb-src http:\/\/security.debian.org\/debian-security bookworm-security main contrib non-free/g" /etc/apt/sources.list
-
-# Update Packages
-refresh_packages
-
-## End Config packages
-
 ###############################
 ## Desktop Environment
 ###############################
@@ -163,6 +164,7 @@ then
         kde-spectacle
         ark
         gwenview
+        kamoso
         kate
         kcalc
         kget
@@ -286,6 +288,7 @@ common_packages+=(
     firmware-linux-nonfree
     fonts-liberation
     fonts-noto
+    gnome-keyring
     g++
     gimp
     git
@@ -322,16 +325,16 @@ fi
 ###############################
 dev_packages=()
 
-# Nodejs - LTS
+# Nodejs - LTS - v16.16.0
 cp "$HOME/.bashrc" "$HOME/.bashrc_backup_$(date)"
 cp "$HOME/.profile" "$HOME/.profile_backup_$(date)"
 mkdir $HOME/.node
-curl https://nodejs.org/dist/v16.15.1/node-v16.15.1-linux-x64.tar.xz --output node-v16.15.1-linux-x64.tar.xz
-tar -xf node-v16.15.1-linux-x64.tar.xz -C $HOME/.node/
+curl https://nodejs.org/dist/v16.16.0/node-v16.16.0-linux-x64.tar.xz --output node-v16.16.0-linux-x64.tar.xz
+tar -xf node-v16.16.0-linux-x64.tar.xz -C $HOME/.node/
 
 echo -n '
 # Node
-export NODEJS_HOME=$HOME/.node/node-v16.15.1-linux-x64/bin
+export NODEJS_HOME=$HOME/.node/node-v16.16.0-linux-x64/bin
 export PATH=$NODEJS_HOME:$PATH
 ' | tee -a ~/.profile ~/.bashrc
 
@@ -345,7 +348,7 @@ sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/trusted.gpg.d/p
 rm -f packages.microsoft.gpg
 
 dev_packages+=(
-	code
+    code
 )
 
 # End Dev Tools

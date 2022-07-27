@@ -22,7 +22,8 @@ echo '
 
 
 '
-##############################
+
+###############################
 ## Functions
 ###############################
 firefox_install(){
@@ -101,7 +102,7 @@ refresh_packages(){
 # Install Script Dependencies
 pre_install
 
-##############################
+###############################
 ## Add opi codecs
 ###############################
 sudo zypper install -y opi
@@ -153,7 +154,6 @@ then
 		dolphin
 		ark
 		discover
-		gnome-keyring
 		gwenview5
         kamoso
 		kate
@@ -213,6 +213,7 @@ common_packages=(
     kernel-firmware-all
     liberation-fonts
     noto-sans-fonts
+    gnome-keyring
     gcc-c++
     gimp
     git
@@ -229,16 +230,16 @@ common_packages=(
 ## Dev Tools
 ###############################
 
-# Nodejs - LTS
+# Nodejs - LTS - v16.16.0
 cp "$HOME/.bashrc" "$HOME/.bashrc_backup_$(date)"
 cp "$HOME/.profile" "$HOME/.profile_backup_$(date)"
 mkdir $HOME/.node
-curl https://nodejs.org/dist/v16.15.1/node-v16.15.1-linux-x64.tar.xz --output node-v16.15.1-linux-x64.tar.xz
-tar -xf node-v16.15.1-linux-x64.tar.xz -C $HOME/.node/
+curl https://nodejs.org/dist/v16.16.0/node-v16.16.0-linux-x64.tar.xz --output node-v16.16.0-linux-x64.tar.xz
+tar -xf node-v16.16.0-linux-x64.tar.xz -C $HOME/.node/
 
 echo -n '
 # Node
-export NODEJS_HOME=$HOME/.node/node-v16.15.1-linux-x64/bin
+export NODEJS_HOME=$HOME/.node/node-v16.16.0-linux-x64/bin
 export PATH=$NODEJS_HOME:$PATH
 ' | tee -a ~/.profile ~/.bashrc
 
@@ -250,7 +251,7 @@ sudo sh -c 'echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.m
 refresh_packages
 
 dev_packages+=(
-	code
+    code
 )
 
 ## End Dev Tools
