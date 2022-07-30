@@ -59,37 +59,7 @@ firefox_install(){
     MimeType=text/html;text/xml;application/xhtml+xml;application/xml;application/rss+xml;application/rdf+xml;image/gif;image/jpeg;image/png;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;x-scheme-handler/chrome;video/webm;application/x-xpinstall;' > $HOME/.local/share/applications/Firefox.desktop
 }
 
-browser_setup(){
-	read -p "$1? [y/n]: " browser_option
-	
-	# Default no
-	if [[ ! $browser_option ]] || [[ $browser_option != 'y' ]]
-	then
-		browser_option='n'
-	else
-		if [[ $1 == "Vivaldi" ]]
-		then
-			wget -qO- https://repo.vivaldi.com/archive/linux_signing_key.pub | gpg --dearmor | sudo dd of=/usr/share/keyrings/vivaldi-browser.gpg
-			echo "deb [signed-by=/usr/share/keyrings/vivaldi-browser.gpg arch=$(dpkg --print-architecture)] https://repo.vivaldi.com/archive/deb/ stable main" | sudo dd of=/etc/apt/sources.list.d/vivaldi-archive.list
-			browser+=(
-				vivaldi-stable
-			)
-		fi
-
-		if [[ $1 == "Chromium" ]]
-		then
-			browser+=(
-				chromium
-        		chromium-l10n
-			)
-		fi
-		
-		if [[ $1 == "Mozilla Firefox (tar.bz2)" ]]
-		then
-			firefox_install
-		fi
-	fi
-}
+source browser.sh
 
 pre_install(){
 	sudo apt-get install wget gpg curl -y
@@ -140,9 +110,9 @@ echo "
 Choose wich browser(s) do you want to install (Default: none)
 "
 
-browser_setup "Vivaldi"
-browser_setup "Chromium"
-browser_setup "Mozilla Firefox (tar.bz2)"
+browser_setup "Vivaldi" "Debian"
+browser_setup "Chromium" "Debian"
+browser_setup "Mozilla Firefox (tar.bz2)" "Debian"
 
 read -p "
 Install all drivers? (Default: no) [y/n]: " drivers_option
@@ -323,23 +293,9 @@ fi
 ###############################
 ## Dev Tools
 ###############################
-dev_packages=()
 
-# Nodejs - LTS - v16.16.0
-cp "$HOME/.bashrc" "$HOME/.bashrc_backup_$(date)"
-cp "$HOME/.profile" "$HOME/.profile_backup_$(date)"
-mkdir $HOME/.node
-curl https://nodejs.org/dist/v16.16.0/node-v16.16.0-linux-x64.tar.xz --output node-v16.16.0-linux-x64.tar.xz
-tar -xf node-v16.16.0-linux-x64.tar.xz -C $HOME/.node/
-
-echo -n '
-# Node
-export NODEJS_HOME=$HOME/.node/node-v16.16.0-linux-x64/bin
-export PATH=$NODEJS_HOME:$PATH
-' | tee -a ~/.profile ~/.bashrc
-
-. ~/.profile ~/.bashrc
-# End Node - LTS
+# Nodejs - LTS
+source node_lts_install.sh
 
 # Visual Studio Code - vscode
 wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg

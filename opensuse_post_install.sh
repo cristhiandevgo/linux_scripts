@@ -59,36 +59,8 @@ firefox_install(){
     MimeType=text/html;text/xml;application/xhtml+xml;application/xml;application/rss+xml;application/rdf+xml;image/gif;image/jpeg;image/png;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;x-scheme-handler/chrome;video/webm;application/x-xpinstall;' > $HOME/.local/share/applications/Firefox.desktop
 }
 
-browser_setup(){
-	read -p "$1? [y/n]: " browser_option
-	
-	# Default no
-	if [[ ! $browser_option ]] || [[ $browser_option != 'y' ]]
-	then
-		browser_option='n'
-	else
-		if [[ $1 == "Vivaldi" ]]
-		then
-			sudo zypper ar https://repo.vivaldi.com/archive/vivaldi-suse.repo
-			browser+=(
-				vivaldi-stable
-			)
-		fi
+source browser.sh
 
-		if [[ $1 == "Chromium" ]]
-		then
-			browser+=(
-				chromium
-				chromium-ffmpeg-extra
-			)
-		fi
-		
-		if [[ $1 == "Mozilla Firefox (tar.bz2)" ]]
-		then
-			firefox_install
-		fi
-	fi
-}
 pre_install(){
     sudo zypper install -y wget curl gpg2
 }
@@ -133,9 +105,9 @@ echo "
 Choose wich browser(s) do you want to install (Default: none)
 "
 
-browser_setup "Vivaldi"
-browser_setup "Chromium"
-browser_setup "Mozilla Firefox (tar.bz2)"
+browser_setup "Vivaldi" "OpenSuse"
+browser_setup "Chromium" "OpenSuse"
+browser_setup "Mozilla Firefox (tar.bz2)" "OpenSuse"
 
 read -p "
 Reboot after install? (Default: no) [y/n]: " reboot_option
@@ -230,20 +202,8 @@ common_packages=(
 ## Dev Tools
 ###############################
 
-# Nodejs - LTS - v16.16.0
-cp "$HOME/.bashrc" "$HOME/.bashrc_backup_$(date)"
-cp "$HOME/.profile" "$HOME/.profile_backup_$(date)"
-mkdir $HOME/.node
-curl https://nodejs.org/dist/v16.16.0/node-v16.16.0-linux-x64.tar.xz --output node-v16.16.0-linux-x64.tar.xz
-tar -xf node-v16.16.0-linux-x64.tar.xz -C $HOME/.node/
-
-echo -n '
-# Node
-export NODEJS_HOME=$HOME/.node/node-v16.16.0-linux-x64/bin
-export PATH=$NODEJS_HOME:$PATH
-' | tee -a ~/.profile ~/.bashrc
-
-. ~/.profile ~/.bashrc
+# Nodejs - LTS
+source node_lts_install.sh
 
 # Visual Studio Code - vscode
 sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc
