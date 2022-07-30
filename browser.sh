@@ -1,7 +1,6 @@
 firefox_install(){
     ## Mozilla Firefox
     # Install Firefox from Mozilla builds
-    cd /tmp/
     wget 'https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=pt-BR' -O firefox.tar.bz2
     tar -xjf firefox.tar.bz2
     sudo mv -f firefox /opt/

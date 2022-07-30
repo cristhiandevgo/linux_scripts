@@ -26,40 +26,6 @@ echo '
 ###############################
 ## Functions
 ###############################
-firefox_install(){
-    ## Mozilla Firefox
-    # Install Firefox from Mozilla builds
-    cd /tmp/
-    wget 'https://download.mozilla.org/?product=firefox-latest-ssl&os=linux64&lang=pt-BR' -O firefox.tar.bz2
-    tar -xjf firefox.tar.bz2
-    sudo mv -f firefox /opt/
-
-    mkdir -p $HOME/.local/share/applications/
-
-    echo -e '[Desktop Entry]
-    Version=1.0
-    Name=Firefox Web Browser
-    Comment=Browse the World Wide Web
-    Exec=/opt/firefox/firefox %u
-    GenericName=Web Browser
-    Icon=/opt/firefox/browser/chrome/icons/default/default128.png
-    MimeType=
-    Name=Firefox Web Browser
-    NoDisplay=false
-    Path=
-    StartupNotify=true
-    Terminal=false
-    TerminalOptions=
-    Type=Application
-    X-DBUS-ServiceName=
-    X-DBUS-StartupType=
-    X-KDE-SubstituteUID=false
-    X-KDE-Username=
-    Categories=GNOME;GTK;Network;WebBrowser;
-    MimeType=text/html;text/xml;application/xhtml+xml;application/xml;application/rss+xml;application/rdf+xml;image/gif;image/jpeg;image/png;x-scheme-handler/http;x-scheme-handler/https;x-scheme-handler/ftp;x-scheme-handler/chrome;video/webm;application/x-xpinstall;' > $HOME/.local/share/applications/Firefox.desktop
-}
-
-source browser.sh
 
 pre_install(){
 	sudo apt-get install wget gpg curl -y
@@ -106,6 +72,7 @@ Choose your Desktop Environment (Default: KDE Plasma):
 ' de_option
 
 # Browser
+source browser.sh
 echo "
 Choose wich browser(s) do you want to install (Default: none)
 "
