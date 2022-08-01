@@ -89,23 +89,23 @@ if [ ! $de_option ] || [ $de_option -eq 1 ] || [ $de_option -ge 6 ]
 then
     # KDE Plasma
     desktop_environment=(
-		patterns-kde-kde_plasma
-		dolphin
-		ark
-		discover
-		gwenview5
+        patterns-kde-kde_plasma
+        dolphin
+        ark
+        discover
+        gwenview5
         kamoso
-		kate
-		kcalc
-		kget
-		kolourpaint
-		konsole
-		kompare
-		libreoffice-qt5
-		okular
-		qbittorrent
-		spectacle
-	)
+        kate
+        kcalc
+        kget
+        kolourpaint
+        konsole
+        kompare
+        libreoffice-qt5
+        okular
+        qbittorrent
+        spectacle
+    )
 
     themes=(
     )
@@ -216,5 +216,5 @@ if [[ ! $reboot_option ]] || [[ $reboot_option != 'y' ]]
 then
     reboot_option="n"
 else
-	sudo reboot
+    sudo reboot
 fi

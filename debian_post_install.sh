@@ -117,8 +117,8 @@ then
     )
 
     themes+=(
-		sddm-theme-breeze
-		sddm-theme-debian-breeze
+        sddm-theme-breeze
+        sddm-theme-debian-breeze
     )
 elif [ $de_option -eq 2 ]
 then
@@ -250,7 +250,7 @@ if [[ ! $drivers_option ]] || [[ $drivers_option != 'y' ]]
 then
     drivers_option="n"
 else
-	drivers+=(
+    drivers+=(
         firmware-*
     )
 fi
@@ -318,5 +318,5 @@ if [[ ! $reboot_option ]] || [[ $reboot_option != 'y' ]]
 then
     reboot_option="n"
 else
-	sudo reboot
+    sudo reboot
 fi
