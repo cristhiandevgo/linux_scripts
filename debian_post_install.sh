@@ -294,6 +294,13 @@ then
     sudo sed -i "s/managed=false/managed=true/g" /etc/NetworkManager/NetworkManager.conf
 fi
 
+# User dir folders
+# Info: Latest versions of Debian (KDE Plasma) are not automatically generating the Home user folders. So, let's force this task for now.
+if [ ! $de_option ] || [ $de_option -eq 1 ] || [ $de_option -ge 6 ]
+then
+    xdg-user-dirs-update --force
+fi
+
 # Cinnamon Themes
 if [ $de_option -eq 5 ]
 then
