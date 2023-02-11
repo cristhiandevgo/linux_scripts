@@ -220,9 +220,7 @@ fi
 ###############################
 common_packages+=(
     curl
-    firmware-linux
     firmware-linux-free
-    firmware-linux-nonfree
     fonts-liberation
     fonts-noto
     gnome-keyring
