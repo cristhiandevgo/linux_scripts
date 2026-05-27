@@ -327,6 +327,7 @@ main() {
     ## Repositories & Third Party
     ###############################
     enable_vscode_repo
+    enable_mozilla_repo
     enable_flathub
 
     ###############################
@@ -406,6 +407,7 @@ main() {
     general_packages=(
         build-essential
         curl
+        firefox
         git
         libreoffice-calc
         libreoffice-impress
@@ -469,7 +471,6 @@ main() {
 
     # Flatpak packages
     flatpak_packages=(
-        org.mozilla.firefox
     )
 
     # Themes packages
