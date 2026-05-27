@@ -375,10 +375,7 @@ main() {
             )
 
             applications=(
-                loupe
-                papers
                 file-roller
-                gnome-text-editor
                 gnome-calculator
                 gnome-characters
                 gnome-clocks
@@ -390,10 +387,13 @@ main() {
                 gnome-music
                 gnome-system-monitor
                 gnome-terminal
+                gnome-text-editor
                 gnome-tweaks
                 gnome-weather
+                loupe
                 nautilus
                 network-manager-gnome
+                papers
                 showtime
             )
             ;;
