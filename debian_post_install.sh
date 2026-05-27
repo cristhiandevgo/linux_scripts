@@ -229,7 +229,7 @@ enable_mozilla_repo() {
     # Enable the official Mozilla APT repository using modern DEB822 format.
 
     local MOZILLA_SOURCE_FILE="/etc/apt/sources.list.d/mozilla.sources"
-    local MOZILLA_KEYRING="/etc/apt/keyrings/packages.mozilla.org.gpg"
+    local MOZILLA_KEYRING="/etc/apt/keyrings/packages.mozilla.org.asc"
 
     # Check if the repository is already configured
     if [ -f "$MOZILLA_SOURCE_FILE" ] && \
@@ -240,12 +240,11 @@ enable_mozilla_repo() {
 
     show_title_message "Configuring official Mozilla APT repository..."
 
-    # Ensure keyring directory exists
-    sudo mkdir -p /etc/apt/keyrings
+    # Ensure keyring directory exists with correct permissions
+    sudo install -d -m 0755 /etc/apt/keyrings
 
-    # Download and install Mozilla signing key
+    # Download the official Mozilla signing key (keeping its native ASCII format)
     wget -qO- https://packages.mozilla.org/apt/repo-signing-key.gpg \
-        | gpg --dearmor \
         | sudo tee "$MOZILLA_KEYRING" > /dev/null
 
     # Configure Mozilla DEB822 repository
@@ -257,9 +256,9 @@ Components: main
 Signed-By: $MOZILLA_KEYRING
 EOF
 
-    # Configure APT pinning for Firefox packages only
+    # Configure APT pinning for Mozilla packages (Official documentation standard)
     sudo tee /etc/apt/preferences.d/mozilla > /dev/null <<EOF
-Package: firefox*
+Package: *
 Pin: origin packages.mozilla.org
 Pin-Priority: 1000
 EOF
@@ -376,10 +375,10 @@ main() {
             )
 
             applications=(
-                eog
-                evince
+                loupe
+                papers
                 file-roller
-                gedit
+                gnome-text-editor
                 gnome-calculator
                 gnome-characters
                 gnome-clocks
@@ -389,14 +388,13 @@ main() {
                 gnome-font-viewer
                 gnome-maps
                 gnome-music
-                gnome-screenshot
                 gnome-system-monitor
                 gnome-terminal
                 gnome-tweaks
                 gnome-weather
                 nautilus
                 network-manager-gnome
-                totem
+                showtime
             )
             ;;
     esac
@@ -413,7 +411,6 @@ main() {
         libreoffice-impress
         libreoffice-l10n-pt-br
         libreoffice-writer
-        vlc
         vulkan-tools
         wget
     )
@@ -434,15 +431,15 @@ main() {
         1) 
             # KDE Plasma specific packages
             general_packages+=(
+                vlc
             )
             ;;
         2)
             # GNOME specific packages
             general_packages+=(
+                celluloid
                 libreoffice-gtk3
             )
-
-            enable_debian_repos
             ;;
     esac
 
@@ -482,10 +479,15 @@ main() {
     ###############################
     ## Package Installation
     ###############################
+    enable_debian_repos
     refresh_packages
     show_title_message "Installing selected packages..."
     sudo apt install -y "${desktop_environment[@]}" "${applications[@]}" "${general_packages[@]}" "${dev_packages[@]}" "${themes_packages[@]}"
-    flatpak install -y flathub "${flatpak_packages[@]}"
+    if [ ${#flatpak_packages[@]} -gt 0 ]; then
+        flatpak install -y flathub "${flatpak_packages[@]}"
+    else
+        show_info_message "No Flatpak applications to install. Skipping..."
+    fi
 
     ###############################
     ## Last Configurations
