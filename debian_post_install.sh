@@ -225,6 +225,48 @@ enable_gnome_extensions() {
     show_message "Done. Please logout and login again to apply changes."
 }
 
+enable_mozilla_repo() {
+    # Enable the official Mozilla APT repository using modern DEB822 format.
+
+    local MOZILLA_SOURCE_FILE="/etc/apt/sources.list.d/mozilla.sources"
+    local MOZILLA_KEYRING="/etc/apt/keyrings/packages.mozilla.org.gpg"
+
+    # Check if the repository is already configured
+    if [ -f "$MOZILLA_SOURCE_FILE" ] && \
+       grep -q "packages.mozilla.org" "$MOZILLA_SOURCE_FILE"; then
+        show_info_message "Mozilla repository already configured. Skipping setup."
+        return 0
+    fi
+
+    show_title_message "Configuring official Mozilla APT repository..."
+
+    # Ensure keyring directory exists
+    sudo mkdir -p /etc/apt/keyrings
+
+    # Download and install Mozilla signing key
+    wget -qO- https://packages.mozilla.org/apt/repo-signing-key.gpg \
+        | gpg --dearmor \
+        | sudo tee "$MOZILLA_KEYRING" > /dev/null
+
+    # Configure Mozilla DEB822 repository
+    sudo tee "$MOZILLA_SOURCE_FILE" > /dev/null <<EOF
+Types: deb
+URIs: https://packages.mozilla.org/apt
+Suites: mozilla
+Components: main
+Signed-By: $MOZILLA_KEYRING
+EOF
+
+    # Configure APT pinning for Firefox packages only
+    sudo tee /etc/apt/preferences.d/mozilla > /dev/null <<EOF
+Package: firefox*
+Pin: origin packages.mozilla.org
+Pin-Priority: 1000
+EOF
+
+    sudo apt update
+}
+
 disable_kdeconnect(){
     show_title_message "Disabling KDE Connect autostart..."
     # Not best practice, but KDE Connect doesn't have a simple way to disable autostart without removing the package
