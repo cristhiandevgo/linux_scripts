@@ -391,6 +391,7 @@ main() {
         build-essential
         curl
         firefox
+        firefox-l10n-pt-br
         git
         libreoffice-calc
         libreoffice-impress
