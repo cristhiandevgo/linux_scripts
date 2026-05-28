@@ -83,32 +83,24 @@ enable_gdm(){
 }
 
 enable_splashscreen() {
-    return # [RECHECK] Debian 14 seems to have some issues with Plymouth.
     show_title_message "Enabling Plymouth Splash Screen..."
-    
-    sudo apt install -y plymouth plymouth-themes
-    sudo sed -i 's/^GRUB_CMDLINE_LINUX_DEFAULT="/GRUB_CMDLINE_LINUX_DEFAULT="quiet splash /' /etc/default/grub
-    sudo plymouth-set-default-theme -R debian-logo
-    
-    show_message "Updating GRUB..."
-    sudo update-grub
-    
-    show_message "Rebuilding initramfs..."
-    sudo update-initramfs -u
-}
 
-enable_debian_themes(){
-    return # [RECHECK] Debian 14 seems to have some issues with desktop-base package.
-    show_title_message "Installing Debian themes and updating GRUB..."
-    sudo apt install desktop-base -y
-    sudo update-grub
+    sudo apt install -y plymouth plymouth-themes
+
+    show_message "Configuring GRUB via drop-in directory..."
+    sudo mkdir -p /etc/default/grub.d
+
+    echo 'GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"' \
+        | sudo tee /etc/default/grub.d/99-plymouth.cfg > /dev/null
+
+    show_message "Updating GRUB..."
+    sudo grub-mkconfig -o /boot/grub/grub.cfg
+
+    show_message "Setting Debian theme and rebuilding initramfs..."
+    sudo plymouth-set-default-theme -R spinner
 }
 
 enable_debian_repos(){
-    # This is a temporary measure to prevent potential issues with the new format DEB822 repositories in Debian 14. 
-    # The script will check if the new format is already in place and skip if it is, otherwise it will set it up with contrib and non-free components enabled.
-
-    # Check if the DEB822 file exists and already contains the required non-free components
     if [ -f /etc/apt/sources.list.d/debian.sources ] && \
        grep -q "non-free-firmware" /etc/apt/sources.list.d/debian.sources; then
         show_info_message "Modern DEB822 repositories with non-free components already active. Skipping setup."
@@ -117,7 +109,6 @@ enable_debian_repos(){
 
     show_title_message "Configuring modern DEB822 repositories for Debian 14..."
 
-    # Backup existing DEB822 file before overwriting (if it exists)
     if [ -f /etc/apt/sources.list.d/debian.sources ]; then
         sudo cp /etc/apt/sources.list.d/debian.sources \
                  /etc/apt/sources.list.d/debian.sources.bak
@@ -149,20 +140,16 @@ EOF
 enable_zram() {
     show_title_message "Installing and configuring zRAM..."
 
-    # Install zram generator
     sudo apt install -y systemd-zram-generator
 
-    # Create configuration (safe and recommended default)
     sudo tee /etc/systemd/zram-generator.conf > /dev/null <<EOF
 [zram0]
 zram-size = ram / 2
 compression-algorithm = zstd
 EOF
 
-    # Reload systemd configuration
     sudo systemctl daemon-reload
 
-    # Restart zram setup (correct way to apply without reboot)
     sudo systemctl restart systemd-zram-setup@zram0.service || true
 
     show_message "zRAM configured successfully."
@@ -204,7 +191,6 @@ EOF
 unmanaged-devices=none
 EOF
 
-    # Restart NetworkManager
     sudo systemctl restart NetworkManager
 }
 
@@ -222,16 +208,15 @@ enable_gnome_extensions() {
     # Enable Dash to Panel extension
     gnome-extensions enable dash-to-panel@jderose9.github.com || true
 
-    show_message "Done. Please logout and login again to apply changes."
+    show_message "Done. The extensions should be active immediately, but you may need to log out and back in for all features to work properly."
 }
 
 enable_mozilla_repo() {
-    # Enable the official Mozilla APT repository using modern DEB822 format.
+    # Mozilla's official APT repository using modern DEB822 format.
 
     local MOZILLA_SOURCE_FILE="/etc/apt/sources.list.d/mozilla.sources"
     local MOZILLA_KEYRING="/etc/apt/keyrings/packages.mozilla.org.asc"
 
-    # Check if the repository is already configured
     if [ -f "$MOZILLA_SOURCE_FILE" ] && \
        grep -q "packages.mozilla.org" "$MOZILLA_SOURCE_FILE"; then
         show_info_message "Mozilla repository already configured. Skipping setup."
@@ -243,11 +228,11 @@ enable_mozilla_repo() {
     # Ensure keyring directory exists with correct permissions
     sudo install -d -m 0755 /etc/apt/keyrings
 
-    # Download the official Mozilla signing key (keeping its native ASCII format)
+    # Download the official Mozilla signing key
     wget -qO- https://packages.mozilla.org/apt/repo-signing-key.gpg \
         | sudo tee "$MOZILLA_KEYRING" > /dev/null
 
-    # Configure Mozilla DEB822 repository
+    # Configure the DEB822 source file for Mozilla packages
     sudo tee "$MOZILLA_SOURCE_FILE" > /dev/null <<EOF
 Types: deb
 URIs: https://packages.mozilla.org/apt
@@ -256,7 +241,7 @@ Components: main
 Signed-By: $MOZILLA_KEYRING
 EOF
 
-    # Configure APT pinning for Mozilla packages (Official documentation standard)
+    # Configure APT pinning for Mozilla packages
     sudo tee /etc/apt/preferences.d/mozilla > /dev/null <<EOF
 Package: *
 Pin: origin packages.mozilla.org
@@ -424,6 +409,7 @@ main() {
         unzip
         xz-utils
         zip
+        zstd
     )
 
     show_title_message "Applying $chosen_de pre configurations..."
@@ -453,6 +439,7 @@ main() {
         vulkan-tools
     )
 
+    # Keep for 32-bit compatibility documentation
     # 32-bit compatibility libraries (Requires: dpkg --add-architecture i386)
     general_packages_i386=(
         libgl1-mesa-dri:i386
@@ -493,6 +480,7 @@ main() {
     ## Last Configurations
     ###############################
     enable_zram
+    enable_splashscreen
 
     show_title_message "Applying $chosen_de post configurations..."
     case $de_option in
