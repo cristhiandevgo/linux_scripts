@@ -370,7 +370,6 @@ main() {
                 gnome-maps
                 gnome-music
                 gnome-system-monitor
-                gnome-terminal
                 gnome-text-editor
                 gnome-tweaks
                 gnome-weather
@@ -378,6 +377,7 @@ main() {
                 nautilus
                 network-manager-gnome
                 papers
+                ptyxis
                 showtime
             )
             ;;
