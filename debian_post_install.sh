@@ -142,17 +142,124 @@ enable_zram() {
 
     sudo apt install -y systemd-zram-generator
 
-    sudo tee /etc/systemd/zram-generator.conf > /dev/null <<EOF
-[zram0]
-zram-size = ram / 2
-compression-algorithm = zstd
-EOF
+    case $zram_option in
+        1) 
+            enable_zram_profile_zstd_balanced
+            ;;
+        2)
+            enable_zram_profile_zstd_game
+            ;;
+        3)
+            enable_zram_profile_zstd_fast_balanced
+            ;;
+        4)
+            enable_zram_profile_zstd_fast_game
+            ;;
+        5)
+            enable_zram_profile_lz4_balanced
+            ;;
+        6)
+            enable_zram_profile_lz4_game
+            ;;
+    esac
 
     sudo systemctl daemon-reload
 
     sudo systemctl restart systemd-zram-setup@zram0.service || true
 
     show_message "zRAM configured successfully."
+}
+
+enable_zram_profile_zstd_balanced(){
+    sudo tee /etc/systemd/zram-generator.conf > /dev/null <<EOF
+[zram0]
+compression-algorithm = zstd
+zram-size = ram
+swap-priority = 32767
+EOF
+
+    sudo tee /etc/sysctl.d/99-swappiness.conf > /dev/null <<EOF
+vm.swappiness = 100
+vm.watermark_boost_factor = 0
+vm.vfs_cache_pressure = 100
+EOF
+}
+
+enable_zram_profile_zstd_game(){
+    sudo tee /etc/systemd/zram-generator.conf > /dev/null <<EOF
+[zram0]
+compression-algorithm = zstd
+zram-size = ram
+swap-priority = 32767
+EOF
+
+    sudo tee /etc/sysctl.d/99-swappiness.conf > /dev/null <<EOF
+vm.swappiness = 160
+vm.watermark_boost_factor = 0
+vm.vfs_cache_pressure = 100
+EOF
+}
+
+enable_zram_profile_zstd_fast_balanced(){
+    sudo tee /etc/systemd/zram-generator.conf > /dev/null <<EOF
+[zram0]
+compression-algorithm = zstd
+options = fast=3
+zram-size = ram
+swap-priority = 32767
+EOF
+
+    sudo tee /etc/sysctl.d/99-swappiness.conf > /dev/null <<EOF
+vm.swappiness = 100
+vm.watermark_boost_factor = 0
+vm.vfs_cache_pressure = 100
+EOF
+}
+
+enable_zram_profile_zstd_fast_game(){
+    sudo tee /etc/systemd/zram-generator.conf > /dev/null <<EOF
+[zram0]
+compression-algorithm = zstd
+options = fast=3
+zram-size = ram
+swap-priority = 32767
+EOF
+
+    sudo tee /etc/sysctl.d/99-swappiness.conf > /dev/null <<EOF
+vm.swappiness = 160
+vm.watermark_boost_factor = 0
+vm.vfs_cache_pressure = 100
+EOF
+}
+
+enable_zram_profile_lz4_balanced(){
+    sudo tee /etc/systemd/zram-generator.conf > /dev/null <<EOF
+[zram0]
+compression-algorithm = lz4
+zram-size = ram
+swap-priority = 32767
+EOF
+
+    sudo tee /etc/sysctl.d/99-swappiness.conf > /dev/null <<EOF
+vm.swappiness = 100
+vm.watermark_boost_factor = 0
+vm.vfs_cache_pressure = 100
+EOF
+}
+
+enable_zram_profile_lz4_game(){
+    sudo tee /etc/systemd/zram-generator.conf > /dev/null <<EOF
+[zram0]
+compression-algorithm = lz4
+zram-size = ram
+swap-priority = 32767
+EOF
+
+    sudo tee /etc/sysctl.d/99-swappiness.conf > /dev/null <<EOF
+vm.swappiness = 160
+vm.watermark_boost_factor = 0
+vm.vfs_cache_pressure = 100
+EOF
 }
 
 enable_networkmanager_kde(){
@@ -290,7 +397,9 @@ main() {
     ###############################
     show_title_message "Options Selection"
 
+    # Desktop Environment
     de_options=("KDE Plasma" "GNOME")
+    zram_options=("ZSTD Balanced" "ZSTD Game" "ZSTD-FAST Balanced" "ZSTD-FAST Game" "LZ4 Balanced" "LZ4 Game")
     
     echo "Desktop Environments available to install: "
     for i in "${!de_options[@]}"; do
@@ -305,6 +414,25 @@ main() {
     fi
 
     chosen_de="${de_options[$((de_option-1))]}"
+    # END: Desktop Environment
+
+    # ZRAM
+    echo
+    echo "ZRAM Settings: "
+    for i in "${!zram_options[@]}"; do
+        echo "$((i+1))) ${zram_options[$i]}"
+    done
+    
+    read -p "Choose one option: " zram_option
+    
+    if ! [[ "$zram_option" =~ ^[1-6]$ ]]; then
+        show_warning_message "Invalid option. Defaulting ZSTD Balanced..."
+        zram_option=1
+    fi
+
+    chosen_zram="${zram_options[$((zram_option-1))]}"
+    # END: ZRAM
+
     read -p "Reboot after install? (Default: no) [y/n]: " reboot_option
 
     ###############################
